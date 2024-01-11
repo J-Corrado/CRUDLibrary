@@ -18,9 +18,10 @@ internal class Program
         
         builder.Services.AddControllersWithViews();
         
-        builder.Services.AddControllers().AddJsonOptions(x =>
-                        x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
-        
+        builder.Services.AddControllers().AddJsonOptions(jsonOptions =>
+        {
+            jsonOptions.JsonSerializerOptions.PropertyNamingPolicy = null;
+        });
         
         
         builder.Services.AddMemoryCache();

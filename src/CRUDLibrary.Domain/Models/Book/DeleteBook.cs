@@ -9,20 +9,20 @@ namespace CRUDLibrary.Domain.Models
 {
     public class DeleteBookRequest : RequestModel
     {
-        public decimal BOOK_ID { get; set; }
+        public int BOOK_ID { get; set; }
     }
 
     public class DeleteBookResponse : ResponseModel
     {
-        public decimal BOOK_ID { get; set; }
+        public int BOOK_ID { get; set; }
         public string BOOK_TITLE { get; set; } = string.Empty;
-        public DateTime? BOOK_PUB_DATE { get; set; }
+        public string? BOOK_PUB_DATE { get; set; } = string.Empty;
         public BookGenre? BOOK_GENRE { get; set; }
     }
     
     public class DeleteBookSubmitRequest : RequestModel
     {
-        public decimal BOOK_ID { get; set; }
+        public int BOOK_ID { get; set; }
     }
     public class DeleteBookSubmitResponse : ResponseModel
     {

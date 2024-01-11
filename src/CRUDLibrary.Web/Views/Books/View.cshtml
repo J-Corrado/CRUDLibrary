@@ -40,7 +40,7 @@
             @foreach(var author in Model.AUTHORED_BOOKS)
             {
                 <li class="list-group-item">
-                <a asp-controller="Authors" asp-action="View" asp-route-id="@author.AUTHOR_ID">@author.AUTHOR_NAME</a>
+                <a asp-controller="Author" asp-action="View" asp-route-id="@author.AUTHOR_ID">@author.AUTHOR_NAME</a>
                         <a class="btn btn-sm btn-danger" asp-action="DeleteAuthor" asp-route-id="@Model.BOOK_ID" asp-route-AuthorId="@author.AUTHOR_ID">Delete</a>
                 </li>
             }

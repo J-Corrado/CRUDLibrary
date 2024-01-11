@@ -21,20 +21,20 @@ namespace CRUDLibrary.Data
                     var georgeOrwell = new Author()
                     {
                         Name = "George Orwell",
-                        DateOfBirth = new DateTime(1903, 06, 25).Date,
-                        DateOfDeath = new DateTime(1950, 01, 21).Date,
+                        DateOfBirth = "1903-06-25",
+                        DateOfDeath = "1950-01-21"
                     };
                     var hpLovecraft = new Author()
                     {
                         Name = "HP Lovecraft",
-                        DateOfBirth = new DateTime(1890, 08, 20).Date,
-                        DateOfDeath = new DateTime(1937, 03, 15).Date
+                        DateOfBirth = "1890-08-20",
+                        DateOfDeath = "1937-03-15"
                     };
                     var jrrTolkien = new Author()
                     {
                         Name = "JRR Tolkien",
-                        DateOfBirth = new DateTime(1892, 01, 03).Date,
-                        DateOfDeath = new DateTime(1973, 09, 02).Date
+                        DateOfBirth = "1892-01-03",
+                        DateOfDeath = "1973-09-02"
                     };
 
                     context.Authors.AddRange(new List<Author>()
@@ -76,32 +76,32 @@ namespace CRUDLibrary.Data
                     var animalFarm = new Book()
                     {
                         Title = "Animal Farm",
-                        PublicationDate = new DateTime(1945, 08, 17).Date,
+                        PublicationDate = "1945-08-17",
                         Genre = BookGenre.Satire
                     };
                     var nineteenEightyFour = new Book()
                     {
                         Title = "Nineteen Eighty-Four",
-                        PublicationDate = new DateTime(1949, 06, 08).Date,
+                        PublicationDate = "1949-06-08",
                         Genre = BookGenre.Novel
                     };
                     var historyOfNecron = new Book()
                     {
                         Title = "History of the Necronomicon",
-                        PublicationDate = new DateTime(1938, 01, 01).Date,
+                        PublicationDate = "1938",
                         Genre = BookGenre.Horror
 
                     };
                     var mountainsOfMadness = new Book()
                     {
                         Title = "At the Mountains of Madness",
-                        PublicationDate = new DateTime(1936, 02, 01).Date,
+                        PublicationDate = "1936-02-01",
                         Genre = BookGenre.Horror
                     };
                     var silmarillion = new Book()
                     {
                         Title = "The Silmarillion",
-                        PublicationDate = new DateTime(1977, 09, 15).Date,
+                        PublicationDate = "1977-09-15",
                         Genre = BookGenre.Fantasy
                     };
                     context.Books.AddRange(new List<Book>()
@@ -119,40 +119,40 @@ namespace CRUDLibrary.Data
                         new BookBorrower()
                         {
                             Book = animalFarm,
-                            BorrowedDate = new DateTime(2023, 12, 20),
-                            ReturnedDate = DateTime.Now,
+                            BorrowedDate = new DateTime(2023, 12, 20).ToString(),
+                            ReturnedDate = DateTime.Now.ToString(),
                             IsReturned = true,
                             Borrower = bor1
                         },
                         new BookBorrower()
                         {
                             Book = nineteenEightyFour,
-                            BorrowedDate = new DateTime(2023, 12, 01),
-                            ReturnedDate = new DateTime(2023, 12, 20),
+                            BorrowedDate = new DateTime(2023, 12, 01).ToString(),
+                            ReturnedDate = new DateTime(2023, 12, 20).ToString(),
                             IsReturned = true,
                             Borrower = bor2
                         },
                         new BookBorrower()
                         {
                             Book = historyOfNecron,
-                            BorrowedDate = new DateTime(2023, 06, 14),
-                            ReturnedDate = new DateTime(2023, 07, 05),
+                            BorrowedDate = new DateTime(2023, 06, 14).ToString(),
+                            ReturnedDate = new DateTime(2023, 07, 05).ToString(),
                             IsReturned = true,
                             Borrower = bor3
                         },
                         new BookBorrower()
                         {
                             Book = mountainsOfMadness,
-                            BorrowedDate = new DateTime(2023, 03, 24),
-                            ReturnedDate = new DateTime(2023, 04, 01),
+                            BorrowedDate = new DateTime(2023, 03, 24).ToString(),
+                            ReturnedDate = new DateTime(2023, 04, 01).ToString(),
                             IsReturned = true,
                             Borrower = bor1
                         },
                         new BookBorrower()
                         {
                             Book = silmarillion,
-                            BorrowedDate = new DateTime(2023, 09, 16),
-                            ReturnedDate = new DateTime(2023, 09, 26),
+                            BorrowedDate = new DateTime(2023, 09, 16).ToString(),
+                            ReturnedDate = new DateTime(2023, 09, 26).ToString(),
                             IsReturned = true,
                             Borrower = bor4
                         }

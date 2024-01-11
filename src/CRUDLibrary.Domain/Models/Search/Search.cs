@@ -14,7 +14,7 @@ public class SearchResponse: ResponseModel
 }
 public class SearchResultItem
 {
-    public decimal ID { get; set; }
+    public int ID { get; set; }
     public string TYPE { get; set; } = string.Empty;
     public string RESULT { get; set; } = string.Empty;
 }

@@ -5,33 +5,33 @@ namespace CRUDLibrary.Domain.Models;
 
 public class RequestModel
 {
-    public decimal REQ_AUTHOR_ID { get; set; }
+    public int REQ_AUTHOR_ID { get; set; }
     public string REQ_AUTHOR_NAME { get; set; } = string.Empty;
     
-    public decimal REQ_BOOK_ID { get; set; }
+    public int REQ_BOOK_ID { get; set; }
     public string REQ_BOOK_TITLE { get; set; } = string.Empty;
     
-    public decimal REQ_BORROWER_ID { get; set; }
+    public int REQ_BORROWER_ID { get; set; }
     public string REQ_BORROWER_NAME { get; set; } = string.Empty;
 
-    public decimal REQ_AUTHOR_BOOK_ID { get; set; }
-    public decimal REQ_BOOK_BORROWER_ID { get; set; }
+    public int REQ_AUTHOR_BOOK_ID { get; set; }
+    public int REQ_BOOK_BORROWER_ID { get; set; }
 
 }
 
 public class ResponseModel
 {
-    public decimal RESP_AUTHOR_ID { get; set; }
+    public int RESP_AUTHOR_ID { get; set; }
     public string RESP_AUTHOR_NAME { get; set; } = string.Empty;
 
-    public decimal RESP_BOOK_ID { get; set; }
+    public int RESP_BOOK_ID { get; set; }
     public string RESP_BOOK_TITLE { get; set; } = string.Empty;
 
-    public decimal RESP_BORROWER_ID { get; set; }
+    public int RESP_BORROWER_ID { get; set; }
     public string RESP_BORROWER_NAME { get; set; } = string.Empty;
 
-    public decimal RESP_AUTHOR_BOOK_ID { get; set; }
-    public decimal RESP_BOOK_BORROWER_ID { get; set; }
+    public int RESP_AUTHOR_BOOK_ID { get; set; }
+    public int RESP_BOOK_BORROWER_ID { get; set; }
 
     public List<BookDto> BOOKS { get; set; } = new List<BookDto>();
     public List<AuthorDto> AUTHORS { get; set; } = new List<AuthorDto>();
@@ -58,6 +58,54 @@ public class ResponseModel
         for (var i = 0; i < ERROR_MESSAGES.Count; i++)
         {
             var tempmsg = ERROR_MESSAGES[i].MESSAGE;
+
+            if (!tempmsg.Contains("#"))
+            {
+                _msg += "<li>" + tempmsg + "</li>";
+                continue;
+            }
+
+            var label = "";
+            var validate_id = "";
+            var errorType = "";
+
+            string[] array = tempmsg.Split('#');
+            var array_count = array.Count();
+
+            if (array_count > 0)
+            {
+                label = array[0];
+            }
+
+            if (array_count > 1)
+            {
+                errorType = array[1];
+            }
+
+            if (array_count > 2)
+            {
+                validate_id = array[2];
+            }
+
+            _msg += "<li>" + label + ((errorType != "") ? (" is " + errorType) : "") + "</li>";
+        }
+
+        _msg += "</ul></div></div>";
+
+        return _msg;
+    }
+    public string DisplaySuccessMessages()
+    {
+        string _msg = "";
+        _msg = "<div class=\"alert alert-danger alert-dismissible show\">" +
+               "<button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\" aria-label=\"Close\"></button>" +
+               "<div class=\"alert-icon\"><i class=\"bi bi-x-circle\"></i></div>" +
+               "<div class=\"alert-text\">" +
+               "<h5>Error</h5><ul>";
+
+        for (var i = 0; i < SUCCESS_MESSAGES.Count; i++)
+        {
+            var tempmsg = SUCCESS_MESSAGES[i].MESSAGE;
 
             if (!tempmsg.Contains("#"))
             {

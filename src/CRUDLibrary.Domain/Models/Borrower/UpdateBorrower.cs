@@ -6,12 +6,12 @@ namespace CRUDLibrary.Domain.Models;
 
 public class UpdateBorrowerRequest : RequestModel
 {
-    public decimal BORROWER_ID { get; set; }
+    public int BORROWER_ID { get; set; }
 }
 
 public class UpdateBorrowerResponse : ResponseModel
 {
-    public decimal BORROWER_ID { get; set; }
+    public int BORROWER_ID { get; set; }
     public string BORROWER_NAME { get; set; } = string.Empty;
 }
 
@@ -19,7 +19,7 @@ public class UpdateBorrowerSubmitRequest : RequestModel
 {
     [Required(ErrorMessage = "Borrower ID#Required#")]
     [CustomValidation(typeof(Validation), "PRIMARY_ID", ErrorMessage = "Borrower ID#Invalid#")]
-    public decimal BORROWER_ID { get; set; }
+    public int BORROWER_ID { get; set; }
 
 
     [CustomValidation(typeof(Validation), "NAME", ErrorMessage = "Borrower Name#Invalid#")]
@@ -28,6 +28,6 @@ public class UpdateBorrowerSubmitRequest : RequestModel
 
 public class UpdateBorrowerSubmitResponse : ResponseModel
 {
-    public decimal ID { get; set; }
+    public int ID { get; set; }
     public string Message { get; set; } = string.Empty;
 }

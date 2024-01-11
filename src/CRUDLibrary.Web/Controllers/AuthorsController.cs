@@ -4,18 +4,18 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CRUDLibrary.Web.Controllers
 {
-    public class AuthorsController : Controller
+    public class AuthorController : Controller
     {
         #region Services
 
-        private readonly IAuthor AuthorService;
-                private readonly IAuthorBook ABService;
+        private IAuthor AuthorService;
+        private IAuthorBook ABService;
 
         #endregion
 
         #region Constructor
 
-        public AuthorsController(IAuthor authorService, IAuthorBook aBService)
+        public AuthorController(IConfiguration configuration, IAuthor authorService, IAuthorBook aBService)
                 {
                     AuthorService = authorService;
                     ABService = aBService;
@@ -35,7 +35,7 @@ namespace CRUDLibrary.Web.Controllers
             return View(_Response);
         }
         //------------------------------------
-        public async Task<IActionResult> View(decimal id)
+        public async Task<IActionResult> View(int id)
         {
             
             ViewAuthorResponse _Response = new();
@@ -57,24 +57,27 @@ namespace CRUDLibrary.Web.Controllers
             return View(_Response);
         }
         //------------------------------------
+        [HttpGet]
         public async Task<IActionResult> Add()
         {
             AddAuthorRequest _Request = new();
             AddAuthorResponse _Response = new();
-            try
+            /*
+             try
             {
                 _Response = await AuthorService.GetAddAuthor(_Request);
             }
             catch (Exception ex)
             {
-                var msgs = new List<MessageListItem>() { new MessageListItem(){ MESSAGE = "Error adding Author." }};
-                _Response.ERROR_MESSAGES.AddRange(msgs);
+                Console.WriteLine(ex);
+                var msgs = new MessageListItem(){ MESSAGE = "Error adding Author in GET." };
+                _Response.ERROR_MESSAGES.Add(msgs);
             }
-            
+            */
             return View(_Response);
         }
         //------------------------------------
-        public async Task<IActionResult> Update(decimal id)
+        public async Task<IActionResult> Update(int id)
         {
             UpdateAuthorResponse _Response = new();
             
@@ -91,7 +94,7 @@ namespace CRUDLibrary.Web.Controllers
             return View(_Response);
         }
         //------------------------------------
-        public async Task<IActionResult> AddBook(decimal id)
+        public async Task<IActionResult> AddBook(int id)
         {
             AddAuthorBookResponse _Response = new();
             try
@@ -112,7 +115,7 @@ namespace CRUDLibrary.Web.Controllers
             return View(_Response);
         }
         //------------------------------------
-        public async Task<IActionResult> DeleteBook(decimal Id, decimal BookId) 
+        public async Task<IActionResult> DeleteBook(int Id, int BookId) 
         {
             var authoredBook = await ABService.GetDeleteAuthorBook(new DeleteAuthorBookRequest()
             {
@@ -123,7 +126,7 @@ namespace CRUDLibrary.Web.Controllers
             return View(authoredBook);
         }
         //------------------------------------
-        public async Task<IActionResult> Delete(decimal id)
+        public async Task<IActionResult> Delete(int id)
                 {
                     DeleteAuthorResponse _Response = new();
                     try
@@ -144,24 +147,23 @@ namespace CRUDLibrary.Web.Controllers
         #region POST
         //------------------------------------
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Add([FromBody] AddAuthorSubmitRequest _Request)
+        public async Task<JsonResult> Add([FromBody] AddAuthorSubmitRequest _Request)
         {
-            AddAuthorSubmitResponse _Response = new();
+            AddAuthorSubmitResponse _Response = new AddAuthorSubmitResponse();
 
             try
-            {
-                _Response = await AuthorService.SubmitAddAuthor(_Request);
-                var msgs = new List<MessageListItem>() { new MessageListItem() { MESSAGE = "Successfully added Author." } };
-                _Response.SUCCESS_MESSAGES.AddRange(msgs);
+            { _Response = await AuthorService.SubmitAddAuthor(_Request);
+                var msgs = new MessageListItem() { MESSAGE = "Successfully added Author." };
+                _Response.SUCCESS_MESSAGES.Add(msgs);
             }
             catch (Exception ex)
             {
-                var msgs = new List<MessageListItem>() { new MessageListItem() { MESSAGE = "Error adding Author." } };
-                _Response.ERROR_MESSAGES.AddRange(msgs);
+                Console.WriteLine(ex);
+                var msgs = new MessageListItem() { MESSAGE = "Error adding Author in POST." };
+                _Response.ERROR_MESSAGES.Add(msgs);
             }
 
-            return RedirectToAction("Index", _Response);
+            return Json(_Response);
         }
         //------------------------------------
         [HttpPost]

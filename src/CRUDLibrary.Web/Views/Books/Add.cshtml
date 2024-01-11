@@ -9,50 +9,65 @@
 
 <h4>Book</h4>
 <hr />
+<form id="AddBookForm">
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Add">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="BOOK_TITLE" class="control-label"></label>
-                <input asp-for="BOOK_TITLE" class="form-control" />
-                <span asp-validation-for="BOOK_TITLE" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="BOOK_GENRE" class="control-label"></label>
-                <select asp-for="BOOK_GENRE" class="form-control">
-                    <option value="">Select Genre</option>
-                    @foreach (var genre in Model.GENRES)
-                    {
-                        <option value="@genre">@genre</option>
-                    }
-                </select>
-                <span asp-validation-for="BOOK_GENRE" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="BOOK_PUB_DATE" class="control-label"></label>
-                <input asp-for="BOOK_PUB_DATE" class="form-control" />
-                <span asp-validation-for="BOOK_PUB_DATE" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="AUTHOR_ID">Author</label>
-                <select asp-for="AUTHOR_ID" asp-items="@(new SelectList(Model.AUTHORS, "Id", "Name"))" class="form-control">
-                    <option value="">Select an existing author</option>
-                </select>
-                <span asp-validation-for="AUTHOR_ID" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="AUTHOR_NAME">Or enter a new author's name</label>
-                <input asp-for="AUTHOR_NAME" id="NewAuthorName" name="NewAuthorName" type="text" class="form-control" />
-                <span asp-validation-for="AUTHOR_NAME" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Add" class="btn btn-primary" />
-            </div>
-        </form>
+        <div id="ErrorMessages" class="alert-message-div">
+                            @if(Model.ERROR_MESSAGES.Count() > 0){ 
+                                @Html.Raw(Model.DisplayErrorMessages());
+                            }
+                        </div>
+                        <div id="SuccessMessages" class="alert-message-div alert-success">
+                            @if (Model.SUCCESS_MESSAGES.Count() > 0)
+                            {
+                                @Html.Raw(Model.DisplaySuccessMessages());
+                            }
+                        </div>
+        <div validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label for="BOOK_TITLE" class="control-label">Book Title</label>
+            <input asp-for="BOOK_TITLE" id="BOOK_TITLE" name="BOOK_TITLE" type="text" required class="form-control"/>
+            <span validation-for="BOOK_TITLE" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="BOOK_GENRE" class="control-label"></label>
+            <select asp-for="BOOK_GENRE" id="BOOK_GENRE" name="BOOK_GENRE" class="form-control">
+                <option value="">Select Genre</option>
+                @foreach (var genre in Model.GENRES)
+                {
+                    <option value="@genre">@genre</option>
+                }
+            </select>
+            <span asp-validation-for="BOOK_GENRE" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="BOOK_PUB_DATE" class="control-label"></label>
+            <input asp-for="BOOK_PUB_DATE" id="BOOK_PUB_DATE" name="BOOK_PUB_DATE" type="date" class="form-control"/>
+            <span validation-for="BOOK_PUB_DATE" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="AUTHOR_ID">Author</label>
+            <select asp-for="AUTHOR_ID" id="AUTHOR_ID" name="AUTHOR_ID" class="form-control">
+                <option value="">Select an existing author</option>
+                @foreach (var author in Model.AUTHORS)
+                {
+                    <option value="@author">@author</option>
+                }
+            </select>
+            <span asp-validation-for="AUTHOR_ID" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="AUTHOR_NAME">Or enter a new author's name</label>
+            <input asp-for="AUTHOR_NAME" id="AUTHOR_NAME" name="AUTHOR_NAME" type="text" class="form-control"/>
+            <span validation-for="AUTHOR_NAME" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <button type="button" id="AddBookSubmit" class="btn btn-primary">Add</button>
+        </div>
+
     </div>
 </div>
-
+</form>
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
@@ -60,3 +75,35 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+<script>
+    
+    $('#AddBookSubmit').on('click',function(){
+        EnableLoader();
+        var sendD = JSON.parse($('#AddBookForm').serializeJSON());
+        $.ajax({
+            url: RootURL() + 'Book/Add',
+            type: 'POST',
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            cache: false,
+            data: JSON.stringify(sendD),
+            success: function (resp) {
+                if(resp.ERROR_MESSAGES.length == 0)
+                {
+                    window.location.href = RootURL() + 'Book/Index/';
+                    $('#SuccessMessages').AddMessage(resp.SUCCESS_MESSAGES);
+                } 
+                else 
+                {
+                    DisableLoader();
+                    $('#ErrorMessages').AddMessages(resp.ERROR_MESSAGES);
+                }
+            },
+            error: function (r) 
+            {
+                DisableLoader();
+            }
+        });
+      });
+</script>
+

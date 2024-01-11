@@ -56,7 +56,6 @@ namespace CRUDLibrary.Domain.Services
             _Response.RESP_AUTHOR_NAME = _Request.REQ_AUTHOR_NAME;
             return _Response;
         }
-
         public async Task<UpdateAuthorResponse> QueryUpdateAuthor(UpdateAuthorRequest _Request)
         {
             UpdateAuthorResponse _Response = new();
@@ -83,38 +82,39 @@ namespace CRUDLibrary.Domain.Services
             return _Response;
             
         }
+        
         public async Task<AddAuthorSubmitResponse> InsertAddAuthor(AddAuthorSubmitRequest _Request)
         {
             AddAuthorSubmitResponse _Response = new AddAuthorSubmitResponse();
             try
             {
-                var author = await _context.Authors.FirstOrDefaultAsync(a => a.AuthorId == _Request.AUTHOR_ID);
+                //var author = await _context.Authors.FirstOrDefaultAsync(a => a.AuthorId == _Request.AUTHOR_ID);
 
-                if (author != null)
-                {
-                    // If AUTHOR_ID is found, Author exists
-                    _Response.ERROR_MESSAGES.Add(new MessageListItem
-                        { MESSAGE = "Author with given AUTHOR_ID already exists" });
-                    return _Response;
+                // if (author != null)
+                // {
+                // If AUTHOR_ID is found, Author exists
+                //     _Response.ERROR_MESSAGES.Add(new MessageListItem
+                //         { MESSAGE = "Author with given AUTHOR_ID already exists" });
+                //    return _Response;
 
-                }
-                else if (!string.IsNullOrEmpty(_Request.AUTHOR_NAME))
-                {
-                    // If a AUTHOR_NAME is provided, create a new author
-                    author = new Data.LIB_DB.Author()
-                    {
-                        Name = _Request.AUTHOR_NAME,
-                        DateOfBirth = _Request.AUTHOR_BORN,
-                        DateOfDeath = _Request.AUTHOR_DIED
-                    };
+                //}
+                //else if (!string.IsNullOrEmpty(_Request.AUTHOR_NAME))
+                //{
+                // If a AUTHOR_NAME is provided, create a new author
+                Data.LIB_DB.Author author = new Data.LIB_DB.Author();
+                
+                author.Name = _Request.AUTHOR_NAME;
+                author.DateOfBirth = _Request.AUTHOR_BORN;
+                author.DateOfDeath = _Request.AUTHOR_DIED;
+                    
                     _context.Authors.Add(author);
                     await _context.SaveChangesAsync();
-                }
+                //}
 
-                _Response.RESP_AUTHOR_ID = _Request.REQ_AUTHOR_ID;
+                //_Response.ID = (int)_Request.AUTHOR_ID;
 
 
-                if (_Request.BOOK_ID != null)
+                /* if (_Request.BOOK_ID != null)
                 {
                     // If BOOK_ID is found, Book exists
                     var book = await _context.Books.FirstOrDefaultAsync(b => b.BookId == _Request.BOOK_ID);
@@ -158,11 +158,12 @@ namespace CRUDLibrary.Domain.Services
                     };
                     _context.AuthorBooks.Add(authorBook);
                     await _context.SaveChangesAsync();
-                }
+                }*/
             }
             catch(Exception ex)
             {
-              _Response.ERROR_MESSAGES.Add(new MessageListItem(){MESSAGE = "Please enter Author"});  
+                Console.WriteLine(ex);
+              _Response.ERROR_MESSAGES.Add(new MessageListItem(){MESSAGE = "Error when attempting to add Author."});  
             }
 
             return _Response;
@@ -307,6 +308,11 @@ namespace CRUDLibrary.Domain.Services
 
             return _Response;
         }
+
+        public async Task<IEnumerable<GenreEnum> QueryGetGenres()
+        {
+            
+        }
         public async Task<Data.LIB_DB.Book> GetBookById(decimal bookId)
         {
             return await _context.Books.FirstOrDefaultAsync(b => b.BookId == bookId);
@@ -324,7 +330,7 @@ namespace CRUDLibrary.Domain.Services
                     {
                         ID = book.BookId, 
                         TITLE = book.Title,
-                        PUB_DATE = book.PublicationDate,
+                        PUB_DATE = book.PublicationDate.ToString(),
                         GENRE = book.Genre
                     });
                 }
@@ -354,7 +360,7 @@ namespace CRUDLibrary.Domain.Services
                     book = new Data.LIB_DB.Book()
                     {
                         Title = _Request.BOOK_TITLE, 
-                        PublicationDate = (DateTime)_Request.BOOK_PUB_DATE, 
+                        PublicationDate = _Request.BOOK_PUB_DATE, 
                         Genre = (Data.LIB_DB.Enum.BookGenre)_Request.BOOK_GENRE
                     };
                     _context.Books.Add(book);
@@ -473,7 +479,7 @@ namespace CRUDLibrary.Domain.Services
                 }
                 if (_Request.BOOK_PUB_DATE != null)
                 {
-                    book.PublicationDate = (DateTime)_Request.BOOK_PUB_DATE;
+                    book.PublicationDate = _Request.BOOK_PUB_DATE;
                 }
                 if (_Request.BOOK_GENRE != null)
                 {
@@ -640,7 +646,7 @@ namespace CRUDLibrary.Domain.Services
                         BookId = book.BookId,
                         Borrower = borrower,
                         BorrowerId = borrower.BorrowerId,
-                        BorrowedDate = DateTime.Now,
+                        BorrowedDate = DateTime.Now.ToString(),
                     };
                     _context.BookBorrows.Add(bookBorrow);
                     _context.SaveChangesAsync();
@@ -650,7 +656,7 @@ namespace CRUDLibrary.Domain.Services
                     var book = new Data.LIB_DB.Book()
                     {
                         Title = _Request.BOOK_TITLE,
-                        PublicationDate = (DateTime)_Request.BOOK_PUB_DATE,
+                        PublicationDate = _Request.BOOK_PUB_DATE,
                         Genre = (Data.LIB_DB.Enum.BookGenre)_Request.BOOK_GENRE
                     };
                     _context.Books.Add(book);
@@ -662,7 +668,7 @@ namespace CRUDLibrary.Domain.Services
                         BookId = book.BookId,
                         Borrower = borrower,
                         BorrowerId = borrower.BorrowerId,
-                        BorrowedDate = DateTime.Now,
+                        BorrowedDate = DateTime.Now.ToString(),
                     };
                     _context.BookBorrows.Add(bookBorrow);
                     _context.SaveChangesAsync();
@@ -828,7 +834,7 @@ namespace CRUDLibrary.Domain.Services
 
                 if (_Request.AUTHOR_DIED != null)
                 {
-                    authorBook.Author.DateOfDeath = _Request.AUTHOR_DIED;
+                    authorBook.Author.DateOfDeath = _Request.AUTHOR_DIED.ToString();
                 }
 
                 if (_Request.BOOK_TITLE != null)
@@ -837,11 +843,11 @@ namespace CRUDLibrary.Domain.Services
                 }
                 if (_Request.BOOK_PUB_DATE != null)
                 {
-                    authorBook.Book.PublicationDate = (DateTime)_Request.BOOK_PUB_DATE;
+                    authorBook.Book.PublicationDate = _Request.BOOK_PUB_DATE;
                 }
                 if (_Request.BOOK_GENRE != null)
                 {
-                    authorBook.Book.Genre = (Data.LIB_DB.Enum.BookGenre)_Request.BOOK_GENRE;
+                    authorBook.Book.Genre = (BookGenre)_Request.BOOK_GENRE;
                 }
 
             await _context.SaveChangesAsync();
@@ -892,8 +898,8 @@ namespace CRUDLibrary.Domain.Services
                 book = new Data.LIB_DB.Book()
                 {
                     Title = _Request.BOOK_TITLE,
-                    Genre = (Data.LIB_DB.Enum.BookGenre)_Request.BOOK_GENRE,
-                    PublicationDate = (DateTime)_Request.BOOK_PUB_DATE
+                    Genre = (BookGenre)_Request.BOOK_GENRE,
+                    PublicationDate = _Request.BOOK_PUB_DATE
                 };
                 _context.Books.Add(book);
                 await _context.SaveChangesAsync();
@@ -944,11 +950,7 @@ namespace CRUDLibrary.Domain.Services
                 await _context.BookBorrows.FirstOrDefaultAsync(bb => bb.BookBorrowId == _Request.BOOK_BORROWER_ID);
             if (bookBorrower != null)
             {
-                bookBorrower.ReturnedDate = DateTime.Now;
-                if (bookBorrower.ReturnedDate > bookBorrower.BorrowedDate)
-                {
-                    bookBorrower.IsReturned = true;
-                }
+                bookBorrower.ReturnedDate = DateTime.Now.ToString();
 
                 _context.BookBorrows.Update(bookBorrower);
                 await _context.SaveChangesAsync();
@@ -994,7 +996,7 @@ namespace CRUDLibrary.Domain.Services
             List<MessageListItem> _Response = new();
 
             var _dup_authorId = await (from author in _context.Authors
-                where author.AuthorId == _Request.AUTHOR_ID
+                where author.AuthorId == _Request.REQ_AUTHOR_ID
                 select author.AuthorId).FirstOrDefaultAsync();
             if (_dup_authorId != 0)
             {

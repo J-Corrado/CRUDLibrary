@@ -20,3 +20,130 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+/* ALERTS*/
+.alert-bold {font-weight:bold;}
+.alert-margin-top {margin-top:10px;}
+.alert-message-div {max-height:300px;overflow-y:auto;overflow-x:hidden;}
+.alert-message-div .alert{/*margin-bottom:0px;*/padding:5px;}
+.alert-message-div .alert-clickable{text-decoration:underline;cursor:pointer;color:blue;}
+.alert-message-div .alert-dismissible .close{right:0px;}
+
+.alert .close {
+  color: #000000;
+  opacity: 1;
+}
+.alert-dismissible .btn-close {
+  padding: 0.6rem 1rem;
+}
+.alert {
+  position: relative;
+  padding: 0;
+  min-width: 250px;
+}
+.alert button.btn-close {
+  margin: 0.45rem 1rem;
+  opacity: 0.75;
+}
+.alert button.btn-close:hover {
+  opacity: 1;
+}
+.alert-icon, .alert-text {
+  display: table-cell;
+  vertical-align: middle;
+}
+.alert-icon {
+  min-width: 40px;
+  text-align: center;
+  font-size: 2.2rem;
+  color: white;
+  background-color: rgba(0,0,0,0.25);
+  padding: 1rem;
+}
+.alert-text {
+  color: #2d3a51;
+  padding: 1rem;
+  width: 100%;
+}
+.alert-text > h5 {
+  margin-top: 0;
+  font-weight: 600;
+}
+.alert .alert-link {
+  font-weight: normal;
+  color: #4790e6;
+}
+.alert ul {
+  margin: 0;
+}
+.alert ul li {
+  margin-bottom: 0.2rem;
+}
+.alert ul li:last-child {
+  margin-bottom: 0;
+}
+.alert-warning {
+  background-color: #fff8f5;
+  border-color: #ffccb3;
+}
+.alert-warning .alert-text h5 {
+  color: #ff5400;
+}
+.alert-warning button.btn-close {
+  color: #ff5400;
+}
+.alert-warning .alert-icon {
+  background-color: #ff5400;
+}
+.alert-help {
+  background-color: #fffcf5;
+  border-color: #ffe4ad;
+}
+.alert-help .alert-text h5 {
+  color: #ffab00;
+}
+.alert-help button.btn-close {
+  color: #ffab00;
+}
+.alert-help .alert-icon {
+  background-color: #ffab00;
+}
+.alert-info {
+  background-color: #f7fbff;
+  border-color: #cee5ff;
+}
+.alert-info .alert-text h5 {
+  color: #3592ff;
+}
+.alert-info button.btn-close {
+  color: #3592ff;
+}
+.alert-info .alert-icon {
+  background-color: #3592ff;
+}
+.alert-danger {
+  background-color: #fdf5f5;
+  border-color: #f6d3d3;
+}
+.alert-danger .alert-text h5 {
+  color: #d33534;
+}
+.alert-danger button.btn-close {
+  color: #d33534;
+}
+.alert-danger .alert-icon {
+  background-color: #d33534;
+}
+.alert-success {
+  background-color: #edf8ed;
+  border-color: #b9e4b9;
+}
+.alert-success .alert-text h5 {
+  color: #42ae42;
+}
+.alert-success button.btn-close {
+  color: #42ae42;
+}
+.alert-success .alert-icon {
+  background-color: #42ae42;
+}

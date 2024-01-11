@@ -10,13 +10,13 @@ namespace CRUDLibrary.Web.Controllers
     public class BooksController : Controller
     {
         #region Services
-        private readonly IBook BookService;
-        private readonly IAuthorBook ABService;
-        private readonly IBookBorrower BBService;
+        private  IBook BookService;
+        private  IAuthorBook ABService;
+        private  IBookBorrower BBService;
         #endregion
         
         #region Constructor
-        public BooksController(IConfiguration configuration, ILogger logger, IBook bookService, IAuthorBook aBService, IBookBorrower bBService)
+        public BooksController(IConfiguration configuration, IBook bookService, IAuthorBook aBService, IBookBorrower bBService)
                 {
                     BookService = bookService;
                     ABService = aBService;
@@ -36,7 +36,7 @@ namespace CRUDLibrary.Web.Controllers
             return View(_Response);
         }
         //------------------------------------
-        public async Task<IActionResult> View(decimal id)
+        public async Task<IActionResult> View(int id)
         {
             ViewBookResponse _Response = new();
         
@@ -73,7 +73,7 @@ namespace CRUDLibrary.Web.Controllers
             return View(_Response); 
         }
         //------------------------------------
-        public async Task<IActionResult> Update(decimal id) 
+        public async Task<IActionResult> Update(int id) 
         {
             UpdateBookResponse _Response = new();
 
@@ -92,7 +92,7 @@ namespace CRUDLibrary.Web.Controllers
             return View(_Response);
         }
         //------------------------------------
-        public async Task<IActionResult> AddBorrow(decimal id)
+        public async Task<IActionResult> AddBorrow(int id)
         {
             AddBookBorrowerResponse _Response = new();
 
@@ -111,7 +111,7 @@ namespace CRUDLibrary.Web.Controllers
             return View(_Response);
         }
         //------------------------------------
-        public async Task<IActionResult> ReturnBorrow(decimal Id, decimal BorrowerId)
+        public async Task<IActionResult> ReturnBorrow(int Id, int BorrowerId)
         {
             UpdateBookBorrowerResponse _Response = new();
          
@@ -129,7 +129,7 @@ namespace CRUDLibrary.Web.Controllers
             return View(_Response);
         }
         //------------------------------------
-        public async Task<IActionResult> AddAuthor(decimal id)
+        public async Task<IActionResult> AddAuthor(int id)
                 {
                     AddAuthorBookResponse _Response = new();
                     try
@@ -146,7 +146,7 @@ namespace CRUDLibrary.Web.Controllers
                     return View(_Response);
                 }
         //------------------------------------
-        public async Task<IActionResult> DeleteAuthor(decimal Id, decimal AuthorId)
+        public async Task<IActionResult> DeleteAuthor(int Id, int AuthorId)
         {
             DeleteAuthorBookResponse _Response = new();
             try
@@ -163,7 +163,7 @@ namespace CRUDLibrary.Web.Controllers
             return View(_Response);
         }
         //------------------------------------
-        public async Task<IActionResult> Delete(decimal id)
+        public async Task<IActionResult> Delete(int id)
         {
             DeleteBookResponse _Response = new();
         

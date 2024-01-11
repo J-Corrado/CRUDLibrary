@@ -8,19 +8,19 @@ namespace CRUDLibrary.Domain.Models
 {
     public class DeleteBorrowerRequest : RequestModel
     {
-        public decimal BORROWER_ID { get; set; }
+        public int BORROWER_ID { get; set; }
     }
 
     public class DeleteBorrowerResponse : ResponseModel
     {
-        public decimal BORROWER_ID { get; set; }
+        public int BORROWER_ID { get; set; }
         public string BORROWER_NAME { get; set; } = string.Empty;
 
     }
     
     public class DeleteBorrowerSubmitRequest : RequestModel
     {
-        public decimal BORROWER_ID { get; set; }
+        public int BORROWER_ID { get; set; }
     }
 
     public class DeleteBorrowerSubmitResponse : ResponseModel

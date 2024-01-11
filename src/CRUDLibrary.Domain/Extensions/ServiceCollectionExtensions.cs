@@ -25,6 +25,8 @@ namespace CRUDLibrary.Domain.Extensions
             services.AddScoped<IBorrower, Services.Borrower>();
             services.AddScoped<IDAL, DAL>();
             services.AddScoped<IValidation, Validation>();
+            services.AddScoped<IAuthorBook, Services.AuthorBook>();
+            services.AddScoped<IBookBorrower, Services.BookBorrower>();
             return services;
         }
     }

@@ -85,7 +85,7 @@ public class AuthorBook : IAuthorBook
                 {
                     BOOK_TITLE = _Request.BOOK_TITLE,
                     BOOK_GENRE = (Data.LIB_DB.Enum.BookGenre)_Request.BOOK_GENRE,
-                    BOOK_PUB_DATE = _Request.BOOK_PUB_DATE
+                    BOOK_PUB_DATE = _Request.BOOK_PUB_DATE.ToString()
                 };
                 _validate.SubmitAddBook(newBookRequest);
                 if (_rtn.ERROR_MESSAGES.Count == 0)

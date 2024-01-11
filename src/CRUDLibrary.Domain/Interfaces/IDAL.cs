@@ -21,6 +21,7 @@ namespace CRUDLibrary.Domain.Interfaces
         #region Book
         
         Task<Book> GetBookById(decimal bookId);
+        Task<IEnumerable<GenreEnum>> QueryGetGenres();
         Task<AllBooksResponse> QueryGetAllBooks(AllBooksRequest _Request);
         Task<AddBookSubmitResponse> InsertAddBook(AddBookSubmitRequest _Request);
         Task<IEnumerable<AuthorBookDto>> QueryGetBookAuthors(decimal bookId);

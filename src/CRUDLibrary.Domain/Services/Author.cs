@@ -22,9 +22,7 @@ namespace CRUDLibrary.Domain.Services
 
             if (_Response.ERROR_MESSAGES.Count == 0)
             {
-                _Response.RESP_AUTHOR_ID = _Request.REQ_AUTHOR_ID;
                 _Response.RESP_AUTHOR_NAME = _Request.REQ_AUTHOR_NAME;
-                _Response.AUTHORS = await _DAL.QueryGetAuthors();
             }
 
             return _Response;
@@ -33,15 +31,15 @@ namespace CRUDLibrary.Domain.Services
         public async Task<AddAuthorSubmitResponse> SubmitAddAuthor(AddAuthorSubmitRequest _Request)
         {
             AddAuthorSubmitResponse _Response = new();
-            _validate.SubmitAddAuthor(_Request);
+            //_validate.SubmitAddAuthor(_Request);
 
             if (_Response.ERROR_MESSAGES.Count == 0)
             {
                 _Response = await _DAL.InsertAddAuthor(_Request);
-                if (_Request.BOOK_ID != null)
+                /* if (_Request.BOOK_ID != null)
                 {
                     await _DAL.InsertAddAuthorBook(new AddAuthorBookSubmitRequest()
-                        { AUTHOR_ID = _Request.AUTHOR_ID, BOOK_ID = _Request.BOOK_ID });
+                        { AUTHOR_ID = (int)_Request.AUTHOR_ID, BOOK_ID = (int)_Request.BOOK_ID });
                 }
                 else if (!string.IsNullOrEmpty(_Request.BOOK_TITLE))
                 {
@@ -53,10 +51,10 @@ namespace CRUDLibrary.Domain.Services
                     });
                     await _DAL.InsertAddAuthorBook(new AddAuthorBookSubmitRequest()
                     {
-                        AUTHOR_ID = _Request.AUTHOR_ID, 
+                        AUTHOR_ID = (int)_Request.AUTHOR_ID, 
                         BOOK_ID = book.ID
                     });
-                }
+                } */
             }
             return _Response;
         }
@@ -125,8 +123,8 @@ namespace CRUDLibrary.Domain.Services
                     if (_Response.ERROR_MESSAGES.Count() == 0)
                     {
                         _Response.AUTHOR_NAME = author.Name;
-                        _Response.AUTHOR_BORN = author.DateOfBirth;
-                        _Response.AUTHOR_DIED = author.DateOfDeath;
+                        _Response.AUTHOR_BORN = author.DateOfBirth.ToString();
+                        _Response.AUTHOR_DIED = author.DateOfDeath.ToString();
                     }
 
                     var authoredBooks = await _DAL.QueryGetAuthoredBooks(_Request.AUTHOR_ID);

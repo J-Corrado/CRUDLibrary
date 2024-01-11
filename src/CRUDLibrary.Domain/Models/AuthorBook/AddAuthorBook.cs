@@ -7,33 +7,33 @@ namespace CRUDLibrary.Domain.Models;
 public class AddAuthorBookRequest : RequestModel
 {
     
-    public decimal AUTHOR_ID { get; set; }
+    public int AUTHOR_ID { get; set; }
     
     //If adding a new author
     public string AUTHOR_NAME { get; set; } = string.Empty;
-    public DateTime? AUTHOR_BORN { get; set; }
-    public DateTime? AUTHOR_DIED { get; set; }
+    public string AUTHOR_BORN { get; set; } = string.Empty;
+    public string? AUTHOR_DIED { get; set; } = string.Empty;
 
     
-    public decimal BOOK_ID { get; set; }
+    public int BOOK_ID { get; set; }
 
     //If adding a new book
     public string BOOK_TITLE { get; set; } = string.Empty;
-    public DateTime? BOOK_PUB_DATE { get; set; }
+    public string? BOOK_PUB_DATE { get; set; } = string.Empty;
     public BookGenre? BOOK_GENRE { get; set; }
 }
 public class AddAuthorBookResponse : ResponseModel
 {
-    public decimal AUTHOR_BOOK_ID { get; set; }
+    public int AUTHOR_BOOK_ID { get; set; }
 
-    public decimal AUTHOR_ID { get; set; }
+    public int AUTHOR_ID { get; set; }
     public string AUTHOR_NAME { get; set; } = string.Empty;
-    public DateTime? AUTHOR_BORN { get; set; }
-    public DateTime? AUTHOR_DIED { get; set; }
+    public string? AUTHOR_BORN { get; set; } = string.Empty;
+    public string? AUTHOR_DIED { get; set; } = string.Empty;
 
-    public decimal BOOK_ID { get; set; }
+    public int BOOK_ID { get; set; }
     public string BOOK_TITLE { get; set; } = string.Empty;
-    public DateTime? BOOK_PUB_DATE { get; set; }
+    public string? BOOK_PUB_DATE { get; set; } = string.Empty;
     public BookGenre? BOOK_GENRE { get; set; }
 
 }
@@ -42,7 +42,7 @@ public class AddAuthorBookSubmitRequest : RequestModel
 {
 
     [CustomValidation(typeof(Validation), "ID", ErrorMessage = "Author ID#Invalid#")]
-    public decimal AUTHOR_ID { get; set; }
+    public int AUTHOR_ID { get; set; }
 
 
     [Required(ErrorMessage = "Author Name#Required#")]
@@ -50,21 +50,21 @@ public class AddAuthorBookSubmitRequest : RequestModel
     public string AUTHOR_NAME { get; set; } = string.Empty;
 
     [CustomValidation(typeof(Validation), "VAL_DATE", ErrorMessage = "Author Date of Birth#Invalid#")]
-    public DateTime? AUTHOR_BORN { get; set; }
+    public string? AUTHOR_BORN { get; set; } = string.Empty;
 
     [CustomValidation(typeof(Validation), "VAL_DATE", ErrorMessage = "Author Date of Death#Invalid#")]
-    public DateTime? AUTHOR_DIED { get; set; }
+    public string? AUTHOR_DIED { get; set; } = string.Empty;
     
 
     [CustomValidation(typeof(Validation), "ID", ErrorMessage = "Book ID#Invalid#")]
-    public decimal BOOK_ID { get; set; }
+    public int BOOK_ID { get; set; }
 
     [Required(ErrorMessage = "Book Title#Required#")]
     [CustomValidation(typeof(Validation), "TITLE", ErrorMessage = "Book Title#Invalid#")]
     public string BOOK_TITLE { get; set; } = string.Empty;
 
     [CustomValidation(typeof(Validation), "VAL_DATE", ErrorMessage = "Book Publication Date#Invalid#")]
-    public DateTime? BOOK_PUB_DATE { get; set; }
+    public string? BOOK_PUB_DATE { get; set; } = string.Empty;
 
     [CustomValidation(typeof(Validation), "DROP_DOWN_REQ", ErrorMessage = "Book Genre#Invalid#")]
     public BookGenre? BOOK_GENRE { get; set; }
@@ -73,6 +73,6 @@ public class AddAuthorBookSubmitRequest : RequestModel
 
 public class AddAuthorBookSubmitResponse : ResponseModel
 {
-    public decimal ID { get; set; }
+    public int ID { get; set; }
     public string Message { get; set; } = string.Empty;
 }

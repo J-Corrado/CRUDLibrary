@@ -5,6 +5,17 @@
 }
 
 <h1>View</h1>
+<div id="ErrorMessages" class="alert-message-div">
+        @if(Model.ERROR_MESSAGES.Count() > 0){ 
+            @Html.Raw(Model.DisplayErrorMessages());
+        }
+    </div>
+    <div id="SuccessMessages" class="alert-message-div alert-success">
+        @if (Model.SUCCESS_MESSAGES.Count() > 0)
+        {
+            @Html.Raw(Model.DisplaySuccessMessages());
+        }
+    </div>
 
 <div>
     <h4>Author</h4>

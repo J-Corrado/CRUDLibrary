@@ -42,7 +42,7 @@ namespace _13_LibraryCRUD.Controllers
         }
 
         //------------------------------------
-        public async Task<IActionResult> View(decimal id)
+        public async Task<IActionResult> View(int id)
         {
             ViewBorrowerResponse _Response = new();
 
@@ -81,7 +81,7 @@ namespace _13_LibraryCRUD.Controllers
         }
 
         //------------------------------------
-        public async Task<IActionResult> AddBorrow(decimal id)
+        public async Task<IActionResult> AddBorrow(int id)
         {
             AddBookBorrowerResponse _Response = new();
 
@@ -102,7 +102,7 @@ namespace _13_LibraryCRUD.Controllers
             return View(_Response);
         }
         //------------------------------------
-        public async Task<IActionResult> Update(decimal id)
+        public async Task<IActionResult> Update(int id)
         {
             UpdateBorrowerResponse _Response = new();
 
@@ -121,7 +121,7 @@ namespace _13_LibraryCRUD.Controllers
             return View(_Response);
         }
         //------------------------------------
-        public async Task<IActionResult> ReturnBorrow(decimal Id, decimal BookId)
+        public async Task<IActionResult> ReturnBorrow(int Id, int BookId)
         {
             UpdateBookBorrowerResponse _Response = new();
 
@@ -141,7 +141,7 @@ namespace _13_LibraryCRUD.Controllers
             return View(_Response);
         }
         //------------------------------------
-        public async Task<IActionResult> Delete(decimal id)
+        public async Task<IActionResult> Delete(int id)
         {
             DeleteBorrowerResponse _Response = new();
 
