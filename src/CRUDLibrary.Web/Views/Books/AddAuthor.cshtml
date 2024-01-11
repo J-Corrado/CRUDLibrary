@@ -1,0 +1,55 @@
+﻿@model CRUDLibrary.Domain.Models.AddAuthorBookResponse
+
+@{
+    ViewData["Title"] = "Add Author";
+}
+
+<h1>Add Author</h1>
+
+<h4>Book</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <h5>Book</h5>
+        <h6>@Model.BOOK_TITLE</h6>
+        <form asp-action="AddAuthor" id="NewAuthor">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="BOOK_ID" />
+            <div class="form-group">
+                <label asp-for="AUTHOR_ID">Author</label>
+                <select asp-for="AUTHOR_ID" asp-items="@(new SelectList(Model.AUTHORS, "Id", "Name"))" class="form-control">
+                    <option value="">Select an existing author</option>
+                </select>
+                <span asp-validation-for="AUTHOR_ID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AUTHOR_NAME">Or enter a new author's name</label>
+                <input asp-for="AUTHOR_NAME" id="NewAuthorName" name="NewAuthorName" type="text" class="form-control" />
+                <span asp-validation-for="AUTHOR_NAME" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AUTHOR_BORN" class="control-label">Born</label>
+                <input asp-for="AUTHOR_BORN" class="form-control" />
+                <span asp-validation-for="AUTHOR_BORN" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AUTHOR_BORN" class="control-label">Died</label>
+                <input asp-for="AUTHOR_BORN" class="form-control" />
+                <span asp-validation-for="AUTHOR_BORN" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+}

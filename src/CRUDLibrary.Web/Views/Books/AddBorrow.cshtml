@@ -1,0 +1,47 @@
+﻿@model CRUDLibrary.Domain.Models.AddBookBorrowerResponse
+
+@{
+    ViewData["Title"] = "Add Borrow";
+}
+
+<h1>Add Borrower</h1>
+
+<h4>Borrowed Book</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <h5>Book</h5>
+        <h6>@Model.BOOK_TITLE</h6>
+        <form asp-action="AddBorrow">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="BOOK_ID" />
+
+            <div class="form-group">
+                <label asp-for="BORROWER_ID">Borrower</label>
+                <select asp-for="BORROWER_ID" asp-items="@(new SelectList(Model.BORROWERS, "Id", "Name"))" class="form-control">
+                    <option value="">Select an existing borrower</option>
+                </select>
+                <span asp-validation-for="BORROWER_ID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BORROWER_NAME">Or enter a new borrower name</label>
+                <input asp-for="BORROWER_NAME" id="NewBorrowerName" name="NewBorrowerName" type="text" class="form-control" />
+                <span asp-validation-for="BORROWER_NAME" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Add" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

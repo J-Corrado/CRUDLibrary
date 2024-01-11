@@ -1,0 +1,54 @@
+﻿@model CRUDLibrary.Domain.Models.ViewAuthorResponse
+
+@{
+    ViewData["Title"] = "View";
+}
+
+<h1>View</h1>
+
+<div>
+    <h4>Author</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            Name
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.AUTHOR_NAME)
+        </dd>
+        <hr />
+        <dt class = "col-sm-2">
+            Born
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.AUTHOR_BORN)
+        </dd>
+        <hr />
+        <dt class = "col-sm-2">
+            Died
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.AUTHOR_DIED)
+        </dd>
+        <hr />
+        <dt class="col-sm-2">
+            Book(s)
+        </dt>
+        <dd class="col-sm-10">
+            <ul class="list-group list-group-flush">
+            @foreach (var book in Model.AUTHORED_BOOKS)
+            {
+                <li class="list-group-item">
+                <a asp-controller="Books" asp-action="View" asp-route-id="@book.BOOK_ID">@book.BOOK_TITLE</a>
+                        <a class="btn btn-sm btn-danger" asp-action="DeleteBook" asp-route-id="@Model.AUTHOR_ID" asp-route-BookId="@book.BOOK_ID">Delete</a>
+                </li>
+             }
+            </ul>
+            <a class="btn btn-sm btn-primary" asp-action="AddBook" asp-route-id="@Model.AUTHOR_ID">Add Book</a>
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Update" asp-route-id="@Model?.AUTHOR_ID">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

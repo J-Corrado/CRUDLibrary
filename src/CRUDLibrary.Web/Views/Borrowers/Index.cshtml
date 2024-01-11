@@ -1,0 +1,41 @@
+﻿@model CRUDLibrary.Domain.Models.AllBorrowersResponse
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Borrowers</h1>
+
+<p>
+    <a class="btn btn-success" asp-action="Add">Add New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Borrower ID
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.BORROWERS) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.NAME)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ID)
+            </td>
+            <td>
+                <a class="btn btn-sm btn-warning" asp-action="Update" asp-route-id="@item.ID">Edit</a> |
+                <a class="btn btn-sm btn-primary" asp-action="View" asp-route-id="@item.ID">Details</a> |
+                <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

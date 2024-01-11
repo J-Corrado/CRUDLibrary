@@ -1,0 +1,76 @@
+﻿
+@model CRUDLibrary.Domain.Models.ViewBookResponse
+
+@{
+    ViewData["Title"] = "View";
+}
+
+<h1>View</h1>
+
+<div>
+    <h4>Book</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            Title
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.BOOK_TITLE)
+        </dd>
+        <hr />
+        <dt class = "col-sm-2">
+            Genre
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.BOOK_GENRE)
+        </dd>
+        <hr />
+        <dt class = "col-sm-2">
+            Publication Date
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.BOOK_PUB_DATE)
+        </dd>
+        <hr />
+        <dt class="col-sm-2">
+            Author(s)
+        </dt>
+        <dd class="col-sm-10">
+            <ul class="list-group list-group-flush">
+            @foreach(var author in Model.AUTHORED_BOOKS)
+            {
+                <li class="list-group-item">
+                <a asp-controller="Authors" asp-action="View" asp-route-id="@author.AUTHOR_ID">@author.AUTHOR_NAME</a>
+                        <a class="btn btn-sm btn-danger" asp-action="DeleteAuthor" asp-route-id="@Model.BOOK_ID" asp-route-AuthorId="@author.AUTHOR_ID">Delete</a>
+                </li>
+            }
+            </ul>
+            <a class="btn btn-sm btn-primary" asp-action="AddAuthor" asp-route-id="@Model.BOOK_ID">Add Author</a>
+        </dd>
+        <hr />
+        <dt class="col-sm-2">
+            Borrowed By
+        </dt>
+        <dd class="col-sm-10">
+            <ul class="list-group list-group-flush">
+                @foreach (var borrower in Model.BOOK_BORROWERS)
+                {
+                    ViewBag.Borrow = borrower;
+                    <li class="list-group-item">
+                        <a asp-controller="Borrowers" asp-action="View" asp-route-id="@borrower.BORROWER_ID">@borrower.BORROWER_NAME</a>
+                        <span> | </span>
+                        <span><strong>Borrowed On:</strong> @borrower.BORROWED_DATE</span>
+                        <span> | </span>
+                        <span><strong>Returned On:</strong> @borrower.RETURNED_DATE</span>
+                        <a class="btn btn-sm btn-success" asp-action="ReturnBorrow" asp-route-id="@Model.BOOK_ID" asp-route-BorrowerId="@borrower.BORROWER_ID">Return Book</a>
+                    </li>
+                }
+            </ul>
+            <a class="btn btn-sm btn-primary" asp-action="AddBorrow" asp-route-id="@Model.BOOK_ID">Add Borrower</a>
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Update" asp-route-id="@Model?.BOOK_ID">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
