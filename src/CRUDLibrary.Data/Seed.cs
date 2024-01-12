@@ -1,7 +1,6 @@
 ﻿using CRUDLibrary.Data.LIB_DB.Enum;
 using CRUDLibrary.Data.LIB_DB;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CRUDLibrary.Data

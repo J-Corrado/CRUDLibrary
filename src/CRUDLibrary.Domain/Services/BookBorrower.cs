@@ -21,6 +21,11 @@ public class BookBorrower : IBookBorrower
         return await _DAL.QueryGetBooks();
     }
     //------------------------------------
+    public async Task<IEnumerable<GenreDto>> GetGenres()
+    {
+        return await _DAL.QueryGetGenres();
+    }
+    //------------------------------------
     public async Task<IEnumerable<BorrowerDto>> GetBorrowers()
     {
         return await _DAL.QueryGetBorrowers();

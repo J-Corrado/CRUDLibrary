@@ -2,7 +2,9 @@
 
 namespace CRUDLibrary.Data.LIB_DB;
 
-    public partial class LIBDBContext : DbContext
+using Enum;
+
+public partial class LIBDBContext : DbContext
     {
 
         public LIBDBContext(DbContextOptions<LIBDBContext> options ): base(options) { }

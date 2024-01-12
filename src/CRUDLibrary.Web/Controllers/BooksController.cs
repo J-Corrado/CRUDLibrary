@@ -70,6 +70,8 @@ namespace CRUDLibrary.Web.Controllers
                 var msgs = new List<MessageListItem>() { new MessageListItem(){ MESSAGE = "Error adding Book." }};
                 _Response.ERROR_MESSAGES.AddRange(msgs);
             }
+
+            ViewBag.Genres = new SelectList(await BookService.GetGenres(), "ID", "NAME");
             return View(_Response); 
         }
         //------------------------------------

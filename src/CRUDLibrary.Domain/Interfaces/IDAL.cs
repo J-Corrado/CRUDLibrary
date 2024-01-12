@@ -21,7 +21,6 @@ namespace CRUDLibrary.Domain.Interfaces
         #region Book
         
         Task<Book> GetBookById(decimal bookId);
-        Task<IEnumerable<GenreEnum>> QueryGetGenres();
         Task<AllBooksResponse> QueryGetAllBooks(AllBooksRequest _Request);
         Task<AddBookSubmitResponse> InsertAddBook(AddBookSubmitRequest _Request);
         Task<IEnumerable<AuthorBookDto>> QueryGetBookAuthors(decimal bookId);
@@ -67,6 +66,7 @@ namespace CRUDLibrary.Domain.Interfaces
         Task<List<BookDto>> QueryGetBooks();
         Task<List<BorrowerDto>> QueryGetBorrowers(); 
         Task<List<AuthorDto>> QueryGetAuthors();
+        Task<IEnumerable<GenreDto>> QueryGetGenres();
 
         #endregion
 

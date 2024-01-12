@@ -54,7 +54,7 @@ public class BookBorrowerDto
     public string RETURNED_DATE { get; set; } = string.Empty;
 }
 
-public class GenreEnum
+public class GenreDto
 {
     public string NAME { get; set; } = string.Empty;
     public int ID { get; set; }

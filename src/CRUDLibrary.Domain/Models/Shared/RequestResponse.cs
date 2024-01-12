@@ -36,7 +36,7 @@ public class ResponseModel
     public List<BookDto> BOOKS { get; set; } = new List<BookDto>();
     public List<AuthorDto> AUTHORS { get; set; } = new List<AuthorDto>();
     public List<BorrowerDto> BORROWERS { get; set; } = new List<BorrowerDto>();
-    public List<BookGenre> GENRES { get; set; } = new List<BookGenre>();
+    public IEnumerable<GenreDto> GENRES { get; set; } = new List<GenreDto>();
     
     
     public IEnumerable<AuthorBookDto> AUTHORED_BOOKS { get; set; } = new List<AuthorBookDto>();

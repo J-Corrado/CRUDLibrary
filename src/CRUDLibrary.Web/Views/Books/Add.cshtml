@@ -2,7 +2,7 @@
 @model CRUDLibrary.Domain.Models.AddBookResponse
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Add";
 }
 
 <h1>Add</h1>
@@ -31,7 +31,7 @@
         </div>
         <div class="form-group">
             <label for="BOOK_GENRE" class="control-label"></label>
-            <select asp-for="BOOK_GENRE" id="BOOK_GENRE" name="BOOK_GENRE" class="form-control">
+            <select asp-for="BOOK_GENRE" id="BOOK_GENRE" name="BOOK_GENRE" asp-items="@(new SelectList(Model.GENRES, "ID", "NAME"))" class="form-control">
                 <option value="">Select Genre</option>
                 @foreach (var genre in Model.GENRES)
                 {

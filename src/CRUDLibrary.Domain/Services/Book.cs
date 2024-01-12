@@ -2,7 +2,6 @@
 using CRUDLibrary.Data.LIB_DB.Enum;
 using CRUDLibrary.Domain.Interfaces;
 using CRUDLibrary.Domain.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace CRUDLibrary.Domain.Services
 {
@@ -25,7 +24,7 @@ namespace CRUDLibrary.Domain.Services
             {
                 _Response.RESP_BOOK_ID = _Request.REQ_AUTHOR_ID;
                 _Response.RESP_BOOK_TITLE = _Request.REQ_AUTHOR_NAME;
-                _Response.BOOKS = await _DAL.QueryGetBooks();
+                _Response.GENRES = await _DAL.QueryGetGenres();
             }
 
             return _Response;
@@ -75,6 +74,11 @@ namespace CRUDLibrary.Domain.Services
             }
             
             return _Response;
+        }
+        //------------------------------------
+        public async Task<IEnumerable<GenreDto>> GetGenres()
+        {
+            return await _DAL.QueryGetGenres();
         }
         //------------------------------------
         public async Task<BookTitleSearchResponse> GetBookTitleSearch(BookTitleSearchRequest _Request)

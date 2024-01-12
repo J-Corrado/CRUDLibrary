@@ -24,7 +24,7 @@ public class AddBookResponse : ResponseModel
     public int BOOK_ID { get; set; }
     public string BOOK_TITLE { get; set; } = string.Empty;
     public string? BOOK_PUB_DATE { get; set; } = string.Empty;
-    public BookGenre BOOK_GENRE { get; set; }
+    public GenreDto BOOK_GENRE { get; set; }
 }
 
 public class AddBookSubmitRequest : RequestModel

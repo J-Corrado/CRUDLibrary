@@ -7,7 +7,7 @@ namespace CRUDLibrary.Domain.Interfaces
     {
         Task<AddBookResponse> GetAddBook(AddBookRequest _Request);
         Task<AddBookSubmitResponse> SubmitAddBook(AddBookSubmitRequest _Request);
-        
+        Task<IEnumerable<GenreDto>> GetGenres();
         Task<AllBooksResponse> GetAllBooks(AllBooksRequest _Request);
         Task<BookTitleSearchResponse> GetBookTitleSearch(BookTitleSearchRequest _Request);
         Task<ViewBookResponse> GetViewBook(ViewBookRequest _Request);

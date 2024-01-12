@@ -304,15 +304,18 @@ namespace CRUDLibrary.Domain.Services
         {
             List<BookDto> _Response = new List<BookDto>();
 
-            _Response = await _context.Books.Select(x => new BookDto() { ID = x.BookId, TITLE = x.Title }).ToListAsync();
+            _Response = await _context.Books.Select(x => new BookDto()
+            {
+                ID = x.BookId, 
+                TITLE = x.Title, 
+                PUB_DATE = x.PublicationDate.ToString(), 
+                GENRE = x.Genre
+            }).ToListAsync();
+            
 
             return _Response;
         }
-
-        public async Task<IEnumerable<GenreEnum> QueryGetGenres()
-        {
-            
-        }
+        
         public async Task<Data.LIB_DB.Book> GetBookById(decimal bookId)
         {
             return await _context.Books.FirstOrDefaultAsync(b => b.BookId == bookId);
@@ -339,6 +342,14 @@ namespace CRUDLibrary.Domain.Services
             _Response.RESP_BOOK_ID = _Request.REQ_BOOK_ID;
             _Response.RESP_BOOK_TITLE = _Request.REQ_BOOK_TITLE;
             return _Response;
+        }
+        public async Task<IEnumerable<GenreDto>> QueryGetGenres()
+        {
+            return Enum.GetValues(typeof(BookGenre)).Cast<BookGenre>().Select(x => new GenreDto()
+            {
+                ID = (int)x,
+                NAME = x.ToString()
+            }).ToList();
         }
         public async Task<AddBookSubmitResponse> InsertAddBook(AddBookSubmitRequest _Request)
         {
