@@ -33,10 +33,6 @@
             <label for="BOOK_GENRE" class="control-label"></label>
             <select asp-for="BOOK_GENRE" id="BOOK_GENRE" name="BOOK_GENRE" asp-items="@(new SelectList(Model.GENRES, "ID", "NAME"))" class="form-control">
                 <option value="">Select Genre</option>
-                @foreach (var genre in Model.GENRES)
-                {
-                    <option value="@genre">@genre</option>
-                }
             </select>
             <span asp-validation-for="BOOK_GENRE" class="text-danger"></span>
         </div>
@@ -47,12 +43,8 @@
         </div>
         <div class="form-group">
             <label asp-for="AUTHOR_ID">Author</label>
-            <select asp-for="AUTHOR_ID" id="AUTHOR_ID" name="AUTHOR_ID" class="form-control">
+            <select asp-for="AUTHOR_ID" id="AUTHOR_ID" name="AUTHOR_ID" asp-items="@(new SelectList(Model.AUTHORS, "ID", "NAME"))" class="form-control">
                 <option value="">Select an existing author</option>
-                @foreach (var author in Model.AUTHORS)
-                {
-                    <option value="@author">@author</option>
-                }
             </select>
             <span asp-validation-for="AUTHOR_ID" class="text-danger"></span>
         </div>
@@ -81,7 +73,7 @@
         EnableLoader();
         var sendD = JSON.parse($('#AddBookForm').serializeJSON());
         $.ajax({
-            url: RootURL() + 'Book/Add',
+            url: RootURL() + 'Books/Add',
             type: 'POST',
             dataType: 'json',
             contentType: 'application/json; charset=utf-8',
@@ -90,8 +82,9 @@
             success: function (resp) {
                 if(resp.ERROR_MESSAGES.length == 0)
                 {
-                    window.location.href = RootURL() + 'Book/Index/';
                     $('#SuccessMessages').AddMessage(resp.SUCCESS_MESSAGES);
+                    window.location.href = RootURL() + 'Books/Index/';
+                    
                 } 
                 else 
                 {

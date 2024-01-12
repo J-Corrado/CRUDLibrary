@@ -62,18 +62,7 @@ namespace CRUDLibrary.Web.Controllers
         {
             AddAuthorRequest _Request = new();
             AddAuthorResponse _Response = new();
-            /*
-             try
-            {
-                _Response = await AuthorService.GetAddAuthor(_Request);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                var msgs = new MessageListItem(){ MESSAGE = "Error adding Author in GET." };
-                _Response.ERROR_MESSAGES.Add(msgs);
-            }
-            */
+            
             return View(_Response);
         }
         //------------------------------------
@@ -101,13 +90,13 @@ namespace CRUDLibrary.Web.Controllers
             {
                 AddAuthorBookRequest _Request = new AddAuthorBookRequest(){AUTHOR_ID = id};
                 _Response = await ABService.GetAddAuthorBook(_Request);
-                var msgs = new List<MessageListItem>() { new MessageListItem() { MESSAGE = "Successfully added Book to Author." } };
-                _Response.SUCCESS_MESSAGES.AddRange(msgs);
+                var msgs = new MessageListItem() { MESSAGE = "Successfully added Book to Author."};
+                _Response.SUCCESS_MESSAGES.Add(msgs);
             }
             catch (Exception ex)
             {
-                var msgs = new List<MessageListItem>() { new MessageListItem(){ MESSAGE = "Error adding Book to Author" }};
-                _Response.ERROR_MESSAGES.AddRange(msgs);
+                var msgs = new MessageListItem(){ MESSAGE = "Error adding Book to Author" };
+                _Response.ERROR_MESSAGES.Add(msgs);
             }
         
             //Set list of existing books to use in Select list in view 
@@ -152,7 +141,8 @@ namespace CRUDLibrary.Web.Controllers
             AddAuthorSubmitResponse _Response = new AddAuthorSubmitResponse();
 
             try
-            { _Response = await AuthorService.SubmitAddAuthor(_Request);
+            { 
+                _Response = await AuthorService.SubmitAddAuthor(_Request);
                 var msgs = new MessageListItem() { MESSAGE = "Successfully added Author." };
                 _Response.SUCCESS_MESSAGES.Add(msgs);
             }

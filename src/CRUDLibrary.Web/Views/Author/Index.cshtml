@@ -21,21 +21,21 @@
 </p>
 <table class="table">
     <thead>
-        <tr>
-            <th>
-                Name
-            </th>
-            <th>
-                Born
-            </th>
-            <th>
-                Died
-            </th>
-            <th></th>
-        </tr>
+    <tr>
+        <th>
+            Name
+        </th>
+        <th>
+            Born
+        </th>
+        <th>
+            Died
+        </th>
+        <th></th>
+    </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.AUTHORS) {
+    @foreach (var item in Model.AUTHORS) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.NAME)
@@ -47,11 +47,22 @@
                 @Html.DisplayFor(modelItem => item.DIED)
             </td>
             <td>
-                    <a class="btn btn-sm btn-warning" asp-action="Update" asp-route-id="@item.ID">Update</a> |
-                    <a class="btn btn-sm btn-primary" asp-action="View" asp-route-id="@item.ID">Details</a> |
-                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                <a class="btn btn-sm btn-warning" asp-action="Update" asp-route-id="@item.ID">Update</a> |
+                <a class="btn btn-sm btn-primary" asp-action="View" asp-route-id="@item.ID">Details</a> |
+                <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.ID">Delete</a>
             </td>
         </tr>
-}
+    }
     </tbody>
 </table>
+<script>
+    $(document).ready(function() {
+        var message = sessionStorage.getItem("MESSAGE");
+        if (message !== null) {
+            // Display your message here for example you can create an alert div and fill it with this alert message
+            $('#SuccessMessages').text(message).show();
+            // after displaying the message, remove it from storage
+            sessionStorage.removeItem("MESSAGE");
+        }
+    });
+</script>

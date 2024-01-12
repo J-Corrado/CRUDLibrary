@@ -25,6 +25,7 @@ namespace CRUDLibrary.Domain.Services
                 _Response.RESP_BOOK_ID = _Request.REQ_AUTHOR_ID;
                 _Response.RESP_BOOK_TITLE = _Request.REQ_AUTHOR_NAME;
                 _Response.GENRES = await _DAL.QueryGetGenres();
+                _Response.AUTHORS = await _DAL.QueryGetAuthors();
             }
 
             return _Response;

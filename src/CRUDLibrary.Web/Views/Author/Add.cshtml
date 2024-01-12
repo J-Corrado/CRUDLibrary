@@ -69,8 +69,8 @@
             success: function (resp) {
                 if(resp.ERROR_MESSAGES.length == 0)
                 {
+                    sessionStorage.setItem("MESSAGE", resp.SUCCESS_MESSAGES);
                     window.location.href = RootURL() + 'Author/Index/';
-                    $('#SuccessMessages').AddMessage(resp.SUCCESS_MESSAGES);
                 } 
                 else 
                 {

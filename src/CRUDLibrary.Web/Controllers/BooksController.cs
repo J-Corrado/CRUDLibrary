@@ -67,11 +67,11 @@ namespace CRUDLibrary.Web.Controllers
             }
             catch (Exception ex)
             {
-                var msgs = new List<MessageListItem>() { new MessageListItem(){ MESSAGE = "Error adding Book." }};
-                _Response.ERROR_MESSAGES.AddRange(msgs);
+                var msgs =new MessageListItem(){ MESSAGE = "Error adding Book." };
+                _Response.ERROR_MESSAGES.Add(msgs);
             }
 
-            ViewBag.Genres = new SelectList(await BookService.GetGenres(), "ID", "NAME");
+            
             return View(_Response); 
         }
         //------------------------------------
@@ -189,7 +189,6 @@ namespace CRUDLibrary.Web.Controllers
         #region POST
         //------------------------------------
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add([FromBody] AddBookSubmitRequest _Request)
         {
             AddBookSubmitResponse _Response = new();
