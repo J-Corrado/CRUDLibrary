@@ -1,4 +1,4 @@
-﻿@model CRUDLibrary.Domain.Models.DeleteAuthorResponse
+﻿@model CRUDLibrary.Domain.Models.DeleteBookResponse
 
 @{
     ViewData["Title"] = "Delete";
@@ -8,43 +8,43 @@
 
 <h3>Are you sure you want to delete this?</h3>
 <div>
-    <h4>Author</h4>
+    <h4>Book</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            Name
+            Title
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.AUTHOR_NAME)
+            @Html.DisplayFor(model => model.BOOK_TITLE)
         </dd>
         <dt class = "col-sm-2">
-            Born
+            Genre
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.AUTHOR_BORN)
+            @Html.DisplayFor(model => model.BOOK_GENRE)
         </dd>
         <dt class = "col-sm-2">
-            Died
+            Publication Date
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.AUTHOR_DIED)
+            @Html.DisplayFor(model => model.BOOK_PUB_DATE)
         </dd>
     </dl>
     
-    <form id="DeleteAuthorForm">
-        <input id="AUTHOR_ID" type="hidden" asp-for="AUTHOR_ID" />
-        <button type="button" id="DeleteAuthorSubmit" class="btn btn-danger">Delete</button> |
+    <form id="DeleteBookForm">
+        <input type="hidden" asp-for="BOOK_ID" />
+        <button type="button" id="DeleteBookSubmit" class="btn btn-danger" >Delete</button> |
         <a asp-action="Index">Back to List</a>
     </form>
 </div>
 
 <script>
     
-    $('#DeleteAuthorSubmit').on('click',function(){
+    $('#DeleteBookSubmit').on('click',function(){
         EnableLoader();
-        var sendD = JSON.parse($('#DeleteAuthorForm').serializeJSON());
+        var sendD = JSON.parse($('#DeleteBookForm').serializeJSON());
         $.ajax({
-            url: RootURL() + 'Author/Delete',
+            url: RootURL() + 'Book/Delete',
             type: 'POST',
             dataType: 'json',
             contentType: 'application/json; charset=utf-8',
@@ -54,7 +54,7 @@
                 if(resp.ERROR_MESSAGES.length == 0)
                 {
                     sessionStorage.setItem("MESSAGE", JSON.stringify(resp.SUCCESS_MESSAGES));
-                    window.location.href = RootURL() + 'Author/Index';
+                    window.location.href = RootURL() + 'Book/Index';
                 } 
                 else 
                 {

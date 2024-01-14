@@ -28,16 +28,15 @@ public class AuthorBook : IAuthorBook
     public async Task<AddAuthorBookResponse> GetAddAuthorBook(AddAuthorBookRequest _Request)
         {
             AddAuthorBookResponse _Response = new();
-
+            
             if (_Response.ERROR_MESSAGES.Count == 0)
             {
-                _Response.RESP_AUTHOR_ID = _Request.REQ_AUTHOR_ID;
-                _Response.RESP_AUTHOR_NAME = _Request.REQ_AUTHOR_NAME;
+                var author = await _DAL.GetAuthorById(int.Parse(_Request.AUTHOR_ID));
+                _Response.AUTHOR_ID = author.AuthorId;
+                _Response.AUTHOR_NAME = author.Name;
                 _Response.AUTHORS = await _DAL.QueryGetAuthors();
-
-                _Response.RESP_BOOK_ID = _Request.REQ_BOOK_ID;
-                _Response.RESP_BOOK_TITLE = _Request.REQ_BOOK_TITLE;
                 _Response.BOOKS = await _DAL.QueryGetBooks();
+                _Response.GENRES = await _DAL.QueryGetGenres();
             }
 
             return _Response;
@@ -48,71 +47,32 @@ public class AuthorBook : IAuthorBook
         {
             AddAuthorBookSubmitResponse _Response = new();
                     
-            var author = await _DAL.GetAuthorById(_Request.AUTHOR_ID);
-            var book = await _DAL.GetBookById(_Request.BOOK_ID);
-                
-            // If no Author Id is provided but an Author Name is provided, create a new author
-            if (author == null && !string.IsNullOrEmpty(_Request.AUTHOR_NAME))
-            {
-                AddAuthorSubmitResponse _rtn = new();
-                var newAuthorRequest = new AddAuthorSubmitRequest()
-                {
-                    AUTHOR_NAME = _Request.AUTHOR_NAME
-                };
-                    
-                _validate.SubmitAddAuthor(newAuthorRequest);
-                if (_rtn.ERROR_MESSAGES.Count == 0)
-                {
-                    var newAuthorResponse = await _DAL.InsertAddAuthor(newAuthorRequest);
-                    _Response.RESP_AUTHOR_ID = newAuthorResponse.ID;
-                }
-                    
-            }
-            else if (author != null)
-            {
-                _Response.RESP_AUTHOR_ID = author.AuthorId;
-            }
-            else
-            {
-                throw new Exception("Author information is insufficient.");
-            }
+            var author = await _DAL.GetAuthorById(int.Parse(_Request.AUTHOR_ID));
+            
                 
             // If a Book Id is not provided, create a new Book.
-            if (_Request.BOOK_ID == null)
+            if (!string.IsNullOrEmpty(_Request.BOOK_ID))
             {
-                AddBookSubmitResponse _rtn = new();
-                var newBookRequest = new AddBookSubmitRequest()
+                var book = await _DAL.GetBookById(int.Parse(_Request.BOOK_ID));
+
+                _Request.AUTHOR_ID = author.AuthorId.ToString();
+                _Request.BOOK_ID = book.BookId.ToString();
+                await _DAL.InsertAddAuthorBook(_Request);
+            }
+            else if (!string.IsNullOrEmpty(_Request.BOOK_TITLE))
+            {
+                var reqAddBook = new AddBookSubmitRequest()
                 {
                     BOOK_TITLE = _Request.BOOK_TITLE,
-                    BOOK_GENRE = (Data.LIB_DB.Enum.BookGenre)_Request.BOOK_GENRE,
-                    BOOK_PUB_DATE = _Request.BOOK_PUB_DATE.ToString()
+                    BOOK_GENRE = _Request.BOOK_GENRE,
+                    BOOK_PUB_DATE = _Request.BOOK_PUB_DATE
                 };
-                _validate.SubmitAddBook(newBookRequest);
-                if (_rtn.ERROR_MESSAGES.Count == 0)
-                {
-                    var newBookResponse = await _DAL.InsertAddBook(newBookRequest);
-                    _Response.RESP_BOOK_ID = newBookResponse.ID;
-                }
+                var respAddBook = await _DAL.InsertAddBook(reqAddBook);
+                _Request.BOOK_ID = respAddBook.ID.ToString();
+                await _DAL.InsertAddAuthorBook(_Request);
             }
-            else
-            {
-                if (book == null)
-                {
-                    throw new Exception("Book not found.");
-                }
-                _Response.RESP_BOOK_ID = _Request.BOOK_ID;
-            }
-            
-            var newAuthorBookRequest = new AddAuthorBookSubmitRequest
-            {
-                AUTHOR_ID = author.AuthorId, 
-                BOOK_ID = book.BookId
-            };
-            var newAuthorBookResponse = await _DAL.InsertAddAuthorBook(newAuthorBookRequest);
-                    
-            if (newAuthorBookResponse == null)
-                throw new Exception("Failed to create AuthorBook relation.");
 
+            _Response.ID = int.Parse(_Request.AUTHOR_ID);
             return _Response;
         }
     //------------------------------------

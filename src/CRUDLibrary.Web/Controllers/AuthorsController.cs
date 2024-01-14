@@ -39,21 +39,19 @@ namespace CRUDLibrary.Web.Controllers
         {
             
             ViewAuthorResponse _Response = new();
-            
+            MessageListItem msgs = new();
             try
             {
                 ViewAuthorRequest _Request = new ViewAuthorRequest(){AUTHOR_ID = id};
                 _Response = await AuthorService.GetViewAuthor(_Request);
-                
             }
             catch (Exception ex)
             {
-                var msg = new List<MessageListItem>() { new MessageListItem { MESSAGE = "Author cannot be found." } };
-                _Response.ERROR_MESSAGES.AddRange(msg);
+                msgs.MESSAGE = "Author cannot be found.";
+                _Response.ERROR_MESSAGES.Add(msgs);
                 return RedirectToAction("Index", _Response);
             }
             
-
             return View(_Response);
         }
         //------------------------------------
@@ -66,13 +64,14 @@ namespace CRUDLibrary.Web.Controllers
             return View(_Response);
         }
         //------------------------------------
+        [HttpGet]
         public async Task<IActionResult> Update(int id)
         {
             UpdateAuthorResponse _Response = new();
             
             try
             {
-                UpdateAuthorRequest _Request = new UpdateAuthorRequest(){ID = id};
+                UpdateAuthorRequest _Request = new UpdateAuthorRequest(){AUTHOR_ID = id.ToString()};
                 _Response = await AuthorService.GetUpdateAuthor(_Request);
             }
             catch (Exception ex)
@@ -80,15 +79,18 @@ namespace CRUDLibrary.Web.Controllers
                 var msgs = new List<MessageListItem>() { new MessageListItem(){ MESSAGE = "Error updating Author." }};
                 _Response.ERROR_MESSAGES.AddRange(msgs);
             }
+            
             return View(_Response);
         }
         //------------------------------------
+        [HttpGet]
         public async Task<IActionResult> AddBook(int id)
         {
             AddAuthorBookResponse _Response = new();
+            
             try
             {
-                AddAuthorBookRequest _Request = new AddAuthorBookRequest(){AUTHOR_ID = id};
+                AddAuthorBookRequest _Request = new AddAuthorBookRequest(){AUTHOR_ID = id.ToString()};
                 _Response = await ABService.GetAddAuthorBook(_Request);
                 var msgs = new MessageListItem() { MESSAGE = "Successfully added Book to Author."};
                 _Response.SUCCESS_MESSAGES.Add(msgs);
@@ -104,6 +106,7 @@ namespace CRUDLibrary.Web.Controllers
             return View(_Response);
         }
         //------------------------------------
+        [HttpGet]
         public async Task<IActionResult> DeleteBook(int Id, int BookId) 
         {
             var authoredBook = await ABService.GetDeleteAuthorBook(new DeleteAuthorBookRequest()
@@ -115,21 +118,23 @@ namespace CRUDLibrary.Web.Controllers
             return View(authoredBook);
         }
         //------------------------------------
+        [HttpGet]
         public async Task<IActionResult> Delete(int id)
-                {
-                    DeleteAuthorResponse _Response = new();
-                    try
-                    {
-                        _Response = await AuthorService.GetDeleteAuthor(new DeleteAuthorRequest() { AUTHOR_ID = id });
-                    }
-                    catch (Exception ex)
-                    {
-                        var msgs = new List<MessageListItem>() { new MessageListItem() { MESSAGE = "Error deleting Author." } };
-                        _Response.ERROR_MESSAGES.AddRange(msgs);
-                    }
+        {
+            DeleteAuthorResponse _Response = new();
+            MessageListItem msgs = new();
+            try
+            {
+                _Response = await AuthorService.GetDeleteAuthor(new DeleteAuthorRequest() { AUTHOR_ID = id.ToString() });
+            }
+            catch (Exception ex) 
+            {
+                msgs.MESSAGE = "Error deleting Author.";
+                _Response.ERROR_MESSAGES.Add(msgs);
+            }
         
-                    return View(_Response);
-                }
+            return View(_Response);
+        }
         //------------------------------------
          #endregion
          
@@ -139,17 +144,17 @@ namespace CRUDLibrary.Web.Controllers
         public async Task<JsonResult> Add([FromBody] AddAuthorSubmitRequest _Request)
         {
             AddAuthorSubmitResponse _Response = new AddAuthorSubmitResponse();
-
+            MessageListItem msgs = new();
             try
             { 
                 _Response = await AuthorService.SubmitAddAuthor(_Request);
-                var msgs = new MessageListItem() { MESSAGE = "Successfully added Author." };
+               msgs.MESSAGE = "Successfully added Author.";
                 _Response.SUCCESS_MESSAGES.Add(msgs);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
-                var msgs = new MessageListItem() { MESSAGE = "Error adding Author in POST." };
+               msgs.MESSAGE = "Error adding Author in POST.";
                 _Response.ERROR_MESSAGES.Add(msgs);
             }
 
@@ -157,87 +162,84 @@ namespace CRUDLibrary.Web.Controllers
         }
         //------------------------------------
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Update([FromBody] UpdateAuthorSubmitRequest _Request)
+        public async Task<JsonResult> Update([FromBody] UpdateAuthorSubmitRequest _Request)
         {
             UpdateAuthorSubmitResponse _Response = new();
+            
+            MessageListItem msgs = new();
             try
             {
                 _Response = await AuthorService.SubmitUpdateAuthor(_Request);
-                var msgs = new List<MessageListItem>() { new MessageListItem() { MESSAGE = "Successfully updated Author." } };
-                _Response.SUCCESS_MESSAGES.AddRange(msgs);
+                msgs.MESSAGE = "Successfully updated Author.";
+                _Response.SUCCESS_MESSAGES.Add(msgs);
             }
             catch(Exception ex)
             {
-                var msgs = new List<MessageListItem>() { new MessageListItem(){ MESSAGE = "Error adding Author." }};
-                _Response.ERROR_MESSAGES.AddRange(msgs);
+                msgs.MESSAGE = "Error adding Author.";
+                _Response.ERROR_MESSAGES.Add(msgs);
             }
-            return RedirectToAction("View", _Response);
+            return Json(_Response);
         }
         //------------------------------------
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddBook([FromBody] AddAuthorBookSubmitRequest _Request)
+        public async Task<JsonResult> AddBook([FromBody] AddAuthorBookSubmitRequest _Request)
         {
             AddAuthorBookSubmitResponse _Response = new();
-            
+            MessageListItem msgs = new();
             try
             {
                 _Response = await ABService.SubmitAddAuthorBook(_Request);
-                var msgs = new List<MessageListItem>() { new MessageListItem() { MESSAGE = "Successfully added Book to Author." } };
-                _Response.SUCCESS_MESSAGES.AddRange(msgs);
-                return RedirectToAction("Index", _Response);
+                msgs.MESSAGE = "Successfully added Book to Author.";
+                _Response.SUCCESS_MESSAGES.Add(msgs);
             }
             catch (Exception ex)
             {
-                var msgs = new List<MessageListItem>() { new MessageListItem(){ MESSAGE = "Error adding Book to Author" }};
-                _Response.ERROR_MESSAGES.AddRange(msgs);
+                msgs.MESSAGE = "Error adding Book to Author";
+                _Response.ERROR_MESSAGES.Add(msgs);
             }
 
             //Set list of existing books to use in Select list in view 
             ViewBag.BookId = await ABService.GetBooks();
-            return RedirectToAction("Index", _Response);
+            return Json(_Response);
         }
         //------------------------------------
-        [HttpPost, ActionName("DeleteBook")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteBookConfirmed([FromBody] DeleteAuthorBookSubmitRequest _Request)
+        [HttpPost]
+        public async Task<JsonResult> DeleteBookConfirmed([FromBody] DeleteAuthorBookSubmitRequest _Request)
         {
             DeleteAuthorBookSubmitResponse _Response = new();
-
+            MessageListItem msgs = new();
             try
             {
                 _Response = await ABService.SubmitDeleteAuthorBook(_Request);
-                var msgs = new List<MessageListItem>() { new MessageListItem() { MESSAGE = "Successfully removed Book from Author." } };
-                _Response.SUCCESS_MESSAGES.AddRange(msgs);
+                msgs.MESSAGE ="Successfully removed Book from Author.";
+                _Response.SUCCESS_MESSAGES.Add(msgs);
             }
             catch (Exception ex)
             {
-                var msgs = new List<MessageListItem>() { new MessageListItem(){ MESSAGE = "Error removing Book from Author" }};
-                _Response.ERROR_MESSAGES.AddRange(msgs);
+                msgs.MESSAGE ="Error removing Book from Author";
+                _Response.ERROR_MESSAGES.Add(msgs);
             }
-            return RedirectToAction("View", _Response);
+            return Json(_Response);
         }
         //------------------------------------
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed([FromBody] DeleteAuthorSubmitRequest _Request)
+        public async Task<JsonResult> DeleteConfirmed([FromBody] DeleteAuthorSubmitRequest _Request)
         {
             DeleteAuthorSubmitResponse _Response = new();
-
+            MessageListItem msgs = new();
             try
             {
                 _Response = await AuthorService.SubmitDeleteAuthor(_Request);
-                var msgs = new List<MessageListItem>() { new MessageListItem() { MESSAGE = "Successfully deleted Author." } };
-                _Response.SUCCESS_MESSAGES.AddRange(msgs);
+               msgs.MESSAGE = "Successfully deleted Author.";
+                _Response.SUCCESS_MESSAGES.Add(msgs);
             }
             catch (Exception ex)
             {
-                var msgs = new List<MessageListItem>() { new MessageListItem() { MESSAGE = "Error deleting Author." } };
-                _Response.ERROR_MESSAGES.AddRange(msgs);
+                msgs.MESSAGE = "Error deleting Author.";
+                _Response.ERROR_MESSAGES.Add(msgs);
             }
             
-            return RedirectToAction("Index", _Response);
+            return Json(_Response);
         }
         //------------------------------------
         #endregion

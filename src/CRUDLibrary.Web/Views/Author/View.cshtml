@@ -1,6 +1,5 @@
 ﻿@model CRUDLibrary.Domain.Models.ViewAuthorResponse
-
-@{
+@{ 
     ViewData["Title"] = "View";
 }
 
@@ -11,10 +10,7 @@
         }
     </div>
     <div id="SuccessMessages" class="alert-message-div alert-success">
-        @if (Model.SUCCESS_MESSAGES.Count() > 0)
-        {
-            @Html.Raw(Model.DisplaySuccessMessages());
-        }
+       
     </div>
 
 <div>
@@ -50,7 +46,7 @@
             @foreach (var book in Model.AUTHORED_BOOKS)
             {
                 <li class="list-group-item">
-                <a asp-controller="Books" asp-action="View" asp-route-id="@book.BOOK_ID">@book.BOOK_TITLE</a>
+                <a asp-controller="Book" asp-action="View" asp-route-id="@book.BOOK_ID">@book.BOOK_TITLE</a>
                         <a class="btn btn-sm btn-danger" asp-action="DeleteBook" asp-route-id="@Model.AUTHOR_ID" asp-route-BookId="@book.BOOK_ID">Delete</a>
                 </li>
              }
@@ -63,3 +59,17 @@
     <a asp-action="Update" asp-route-id="@Model?.AUTHOR_ID">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
+<script>
+$(document).ready(function() {
+var message = sessionStorage.getItem("MESSAGE");
+if (message !== null) {
+var messageList = JSON.parse(message);
+var messageTextArray = messageList.map(function(messageObj) {
+return messageObj.MESSAGE;
+});
+var messageText = messageTextArray.join(' ');
+$('#SuccessMessages').text(messageText).show();
+sessionStorage.removeItem("MESSAGE");
+}
+});
+</script>

@@ -9,6 +9,14 @@
 
 <div>
     <h4>Book</h4>
+    <div id="ErrorMessages" class="alert-message-div">
+        @if (Model.ERROR_MESSAGES.Count() > 0)
+        {
+            @Html.Raw(Model.DisplayErrorMessages());
+        }
+    </div>
+    <div id="SuccessMessages" class="alert-message-div">
+    </div>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -37,7 +45,7 @@
         </dt>
         <dd class="col-sm-10">
             <ul class="list-group list-group-flush">
-            @foreach(var author in Model.AUTHORED_BOOKS)
+            @foreach(var author in Model.BOOK_AUTHORS)
             {
                 <li class="list-group-item">
                 <a asp-controller="Author" asp-action="View" asp-route-id="@author.AUTHOR_ID">@author.AUTHOR_NAME</a>

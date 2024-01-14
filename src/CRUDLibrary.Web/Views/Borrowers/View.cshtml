@@ -30,7 +30,7 @@
             @foreach (var book in Model.BOOK_BORROWS)
             {
                 <li class="list-group-item">
-                <a asp-controller="Books" asp-action="View" asp-route-id="@book.ID">@book.BOOK_TITLE</a>
+                <a asp-controller="Book" asp-action="View" asp-route-id="@book.ID">@book.BOOK_TITLE</a>
                         <span> | </span>
                         <span><strong>Borrowed On:</strong> @book.BORROWED_DATE</span>
                         <span> | </span>

@@ -6,11 +6,11 @@ namespace CRUDLibrary.Domain.Interfaces
     public interface IDAL
     {
         #region Author
-        Task<Author> GetAuthorById(decimal authorId);
+        Task<Author> GetAuthorById(int authorId);
         Task<AllAuthorsResponse> QueryGetAllAuthors(AllAuthorsRequest _Request);
         Task<UpdateAuthorResponse> QueryUpdateAuthor(UpdateAuthorRequest _Request);
         Task<AddAuthorSubmitResponse> InsertAddAuthor(AddAuthorSubmitRequest _Request);
-        Task<IEnumerable<AuthorBookDto>> QueryGetAuthoredBooks(decimal authorId);
+        Task<IEnumerable<AuthorBookDto>> QueryGetAuthoredBooks(int authorId);
         Task<UpdateAuthorSubmitResponse> UpdateAuthor(UpdateAuthorSubmitRequest _Request);
         Task<AuthorNameSearchResponse> QueryGetAuthorNameSearch(AuthorNameSearchRequest _Request);
         Task<ViewAuthorResponse> QueryGetViewAuthor(ViewAuthorRequest _Request);
@@ -20,11 +20,11 @@ namespace CRUDLibrary.Domain.Interfaces
 
         #region Book
         
-        Task<Book> GetBookById(decimal bookId);
+        Task<Book> GetBookById(int bookId);
         Task<AllBooksResponse> QueryGetAllBooks(AllBooksRequest _Request);
         Task<AddBookSubmitResponse> InsertAddBook(AddBookSubmitRequest _Request);
-        Task<IEnumerable<AuthorBookDto>> QueryGetBookAuthors(decimal bookId);
-        Task<IEnumerable<BookBorrowerDto>> QueryGetBorrowersByBook(decimal bookId);
+        Task<IEnumerable<AuthorBookDto>> QueryGetBookAuthors(int bookId);
+        Task<IEnumerable<BookBorrowerDto>> QueryGetBorrowersByBook(int bookId);
         Task<UpdateBookResponse> QueryUpdateBook(UpdateBookRequest _Request);
         Task<UpdateBookSubmitResponse> UpdateBook(UpdateBookSubmitRequest _Request);
         Task<BookTitleSearchResponse> QueryGetBookTitleSearch(BookTitleSearchRequest _Request);
@@ -34,10 +34,10 @@ namespace CRUDLibrary.Domain.Interfaces
         #endregion
 
         #region Borrower
-        Task<Borrower> GetBorrowerById(decimal borrowerId);
+        Task<Borrower> GetBorrowerById(int borrowerId);
         Task<AllBorrowersResponse> QueryGetAllBorrowers(AllBorrowersRequest _Request);
         Task<AddBorrowerSubmitResponse> InsertAddBorrower(AddBorrowerSubmitRequest _Request);
-        Task<IEnumerable<BookBorrowerDto>> QueryGetBooksByBorrower(decimal borrowerId);
+        Task<IEnumerable<BookBorrowerDto>> QueryGetBooksByBorrower(int borrowerId);
         Task<UpdateBorrowerResponse> QueryUpdateBorrower(UpdateBorrowerRequest _Request);
         Task<UpdateBorrowerSubmitResponse> UpdateBorrower(UpdateBorrowerSubmitRequest _Request);
         Task<BorrowerNameSearchResponse> QueryGetBorrowerNameSearch(BorrowerNameSearchRequest _Request);

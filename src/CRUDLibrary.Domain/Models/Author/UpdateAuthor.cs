@@ -5,12 +5,12 @@ namespace CRUDLibrary.Domain.Models;
 
 public class UpdateAuthorRequest : RequestModel
 {
-    public int ID { get; set; }
+    public string AUTHOR_ID { get; set; } = string.Empty;
 }
 
 public class UpdateAuthorResponse : ResponseModel
 {
-    public int AUTHOR_ID { get; set; }
+    public string AUTHOR_ID { get; set; } = string.Empty;
     public string AUTHOR_NAME { get; set; } = string.Empty;
     public string? AUTHOR_BORN { get; set; } = string.Empty;
     public string? AUTHOR_DIED { get; set; } = string.Empty;
@@ -19,8 +19,8 @@ public class UpdateAuthorResponse : ResponseModel
 public class UpdateAuthorSubmitRequest : RequestModel
 {
     [Required(ErrorMessage = "Author ID#Required#")]
-    [CustomValidation(typeof(Validation), "PRIMARY_ID", ErrorMessage = "Author ID#Invalid#")]
-    public int AUTHOR_ID { get; set; }
+    [CustomValidation(typeof(Validation), "ID", ErrorMessage = "Author ID#Invalid#")]
+    public string AUTHOR_ID { get; set; } = string.Empty;
     
     
     [CustomValidation(typeof(Validation), "NAME", ErrorMessage = "Author Name#Invalid#")]

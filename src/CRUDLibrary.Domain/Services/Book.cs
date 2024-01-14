@@ -34,7 +34,7 @@ namespace CRUDLibrary.Domain.Services
         public async Task<AddBookSubmitResponse> SubmitAddBook(AddBookSubmitRequest _Request)
         {
             AddBookSubmitResponse _Response = new();
-            _validate.SubmitAddBook(_Request);
+            //_validate.SubmitAddBook(_Request);
 
             if (_Response.ERROR_MESSAGES.Count == 0)
             {
@@ -44,7 +44,7 @@ namespace CRUDLibrary.Domain.Services
                     await _DAL.InsertAddAuthorBook(new AddAuthorBookSubmitRequest()
                     {
                         AUTHOR_ID = _Request.AUTHOR_ID, 
-                        BOOK_ID = _Request.BOOK_ID
+                        BOOK_ID = _Response.ID.ToString()
                     });
                 }
                 else if (!string.IsNullOrEmpty(_Request.AUTHOR_NAME))
@@ -52,12 +52,10 @@ namespace CRUDLibrary.Domain.Services
                     var author = await _DAL.InsertAddAuthor(new AddAuthorSubmitRequest()
                     {
                         AUTHOR_NAME = _Request.AUTHOR_NAME, 
-                        AUTHOR_BORN = _Request.AUTHOR_BORN, 
-                        AUTHOR_DIED = _Request.AUTHOR_DIED
                     });
                     await _DAL.InsertAddAuthorBook(new AddAuthorBookSubmitRequest()
                     {
-                        AUTHOR_ID = author.ID, 
+                        AUTHOR_ID = author.ID.ToString(), 
                         BOOK_ID = _Request.BOOK_ID
                     });
                 }

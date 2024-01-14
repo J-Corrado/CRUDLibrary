@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CRUDLibrary.Web.Controllers
 {
-    public class BooksController : Controller
+    public class BookController : Controller
     {
         #region Services
         private  IBook BookService;
@@ -16,7 +16,7 @@ namespace CRUDLibrary.Web.Controllers
         #endregion
         
         #region Constructor
-        public BooksController(IConfiguration configuration, IBook bookService, IAuthorBook aBService, IBookBorrower bBService)
+        public BookController(IConfiguration configuration, IBook bookService, IAuthorBook aBService, IBookBorrower bBService)
                 {
                     BookService = bookService;
                     ABService = aBService;
@@ -136,7 +136,7 @@ namespace CRUDLibrary.Web.Controllers
                     AddAuthorBookResponse _Response = new();
                     try
                     {
-                        AddAuthorBookRequest _Request = new AddAuthorBookRequest() { BOOK_ID = id };
+                        AddAuthorBookRequest _Request = new AddAuthorBookRequest() { BOOK_ID = id.ToString() };
                     }
                     catch
                     {
@@ -171,7 +171,7 @@ namespace CRUDLibrary.Web.Controllers
         
             try
             {
-                DeleteBookRequest _Request = new DeleteBookRequest() { BOOK_ID = id };
+                DeleteBookRequest _Request = new DeleteBookRequest() { BOOK_ID = id.ToString() };
                 _Response = await BookService.GetDeleteBook(_Request);
             }
             catch
@@ -189,28 +189,27 @@ namespace CRUDLibrary.Web.Controllers
         #region POST
         //------------------------------------
         [HttpPost]
-        public async Task<IActionResult> Add([FromBody] AddBookSubmitRequest _Request)
+        public async Task<JsonResult> Add([FromBody] AddBookSubmitRequest _Request)
         {
             AddBookSubmitResponse _Response = new();
 
             try
             {
                 _Response = await BookService.SubmitAddBook(_Request);
-                var msgs = new List<MessageListItem>() { new MessageListItem() { MESSAGE = "Successfully added Book." } };
-                _Response.SUCCESS_MESSAGES.AddRange(msgs);
-                return RedirectToAction("Index", _Response);
+                var msgs = new MessageListItem() { MESSAGE = "Successfully added Book."  };
+                _Response.SUCCESS_MESSAGES.Add(msgs);
             }
-            catch
+            catch(Exception ex)
             {
-                var msgs = new List<MessageListItem>() { new MessageListItem(){ MESSAGE = "Error adding Book" }};
-                _Response.ERROR_MESSAGES.AddRange(msgs);
+                Console.WriteLine(ex);
+                var msgs =  new MessageListItem(){ MESSAGE = "Error adding Book" };
+                _Response.ERROR_MESSAGES.Add(msgs);
             }
             
             return Json(_Response);
         }
         //------------------------------------
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Update([FromBody] UpdateBookSubmitRequest _Request)
         {
             UpdateBookSubmitResponse _Response = new();
@@ -231,7 +230,6 @@ namespace CRUDLibrary.Web.Controllers
         }
         //------------------------------------
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddBorrow([FromBody] AddBookBorrowerSubmitRequest _Request)
         {
             AddBookBorrowerSubmitResponse _Response = new();
@@ -251,7 +249,6 @@ namespace CRUDLibrary.Web.Controllers
         }
         //------------------------------------
         [HttpPost, ActionName("ReturnBorrow")]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ReturnBorrowConfirmed([FromBody] UpdateBookBorrowerSubmitRequest _Request)
         {
             UpdateBookBorrowerSubmitResponse _Response = new();
@@ -271,7 +268,6 @@ namespace CRUDLibrary.Web.Controllers
         }
         //------------------------------------
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddAuthor([FromBody] AddAuthorBookSubmitRequest _Request)
         {
             AddAuthorBookSubmitResponse _Response = new();
@@ -291,7 +287,6 @@ namespace CRUDLibrary.Web.Controllers
         }
         //-------------------------------------
         [HttpPost, ActionName("DeleteAuthor")]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteAuthorConfirmed([FromBody] DeleteAuthorBookSubmitRequest _Request)
         {
             DeleteAuthorBookSubmitResponse _Response = new();
@@ -311,24 +306,23 @@ namespace CRUDLibrary.Web.Controllers
         }
         //------------------------------------
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed([FromBody] DeleteBookSubmitRequest _Request)
+        public async Task<JsonResult> DeleteConfirmed([FromBody] DeleteBookSubmitRequest _Request)
         {
             DeleteBookSubmitResponse _Response = new();
-        
+            MessageListItem msgs = new();
             try
             {
                 _Response = await BookService.SubmitDeleteBook(_Request);
-                var msgs = new List<MessageListItem> { new MessageListItem() { MESSAGE = "Successfully deleted Book." } };
-                _Response.SUCCESS_MESSAGES.AddRange(msgs);
+                msgs.MESSAGE = "Successfully deleted Book.";
+                _Response.SUCCESS_MESSAGES.Add(msgs);
             }
             catch
             {
-                var msgs = new List<MessageListItem> { new MessageListItem() { MESSAGE = "Unable to delete Book." } };
-                _Response.ERROR_MESSAGES.AddRange(msgs);
+                msgs.MESSAGE = "Unable to delete Book.";
+                _Response.ERROR_MESSAGES.Add(msgs);
             }
         
-            return RedirectToAction("Index", _Response);
+            return Json(_Response);
         }
         //------------------------------------
         

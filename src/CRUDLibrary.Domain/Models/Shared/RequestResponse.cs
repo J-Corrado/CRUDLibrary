@@ -97,7 +97,7 @@ public class ResponseModel
     public string DisplaySuccessMessages()
     {
         string _msg = "";
-        _msg = "<div class=\"alert alert-danger alert-dismissible show\">" +
+        _msg = "<div class=\"alert alert-success alert-dismissible show\">" +
                "<button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\" aria-label=\"Close\"></button>" +
                "<div class=\"alert-icon\"><i class=\"bi bi-x-circle\"></i></div>" +
                "<div class=\"alert-text\">" +

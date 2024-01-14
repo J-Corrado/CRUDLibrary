@@ -11,16 +11,10 @@
 <hr />
 <form id="AddBookForm">
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-4" id="AddBookInfoDiv">
         <div id="ErrorMessages" class="alert-message-div">
                             @if(Model.ERROR_MESSAGES.Count() > 0){ 
                                 @Html.Raw(Model.DisplayErrorMessages());
-                            }
-                        </div>
-                        <div id="SuccessMessages" class="alert-message-div alert-success">
-                            @if (Model.SUCCESS_MESSAGES.Count() > 0)
-                            {
-                                @Html.Raw(Model.DisplaySuccessMessages());
                             }
                         </div>
         <div validation-summary="ModelOnly" class="text-danger"></div>
@@ -30,14 +24,14 @@
             <span validation-for="BOOK_TITLE" class="text-danger"></span>
         </div>
         <div class="form-group">
-            <label for="BOOK_GENRE" class="control-label"></label>
+            <label for="BOOK_GENRE" class="control-label">Genre</label>
             <select asp-for="BOOK_GENRE" id="BOOK_GENRE" name="BOOK_GENRE" asp-items="@(new SelectList(Model.GENRES, "ID", "NAME"))" class="form-control">
                 <option value="">Select Genre</option>
             </select>
-            <span asp-validation-for="BOOK_GENRE" class="text-danger"></span>
+            <span validation-for="BOOK_GENRE" class="text-danger"></span>
         </div>
         <div class="form-group">
-            <label for="BOOK_PUB_DATE" class="control-label"></label>
+            <label for="BOOK_PUB_DATE" class="control-label">Publication Date</label>
             <input asp-for="BOOK_PUB_DATE" id="BOOK_PUB_DATE" name="BOOK_PUB_DATE" type="date" class="form-control"/>
             <span validation-for="BOOK_PUB_DATE" class="text-danger"></span>
         </div>
@@ -46,13 +40,14 @@
             <select asp-for="AUTHOR_ID" id="AUTHOR_ID" name="AUTHOR_ID" asp-items="@(new SelectList(Model.AUTHORS, "ID", "NAME"))" class="form-control">
                 <option value="">Select an existing author</option>
             </select>
-            <span asp-validation-for="AUTHOR_ID" class="text-danger"></span>
+            <span validation-for="AUTHOR_ID" class="text-danger"></span>
         </div>
         <div class="form-group">
             <label for="AUTHOR_NAME">Or enter a new author's name</label>
             <input asp-for="AUTHOR_NAME" id="AUTHOR_NAME" name="AUTHOR_NAME" type="text" class="form-control"/>
             <span validation-for="AUTHOR_NAME" class="text-danger"></span>
         </div>
+        <br/>
         <div class="form-group">
             <button type="button" id="AddBookSubmit" class="btn btn-primary">Add</button>
         </div>
@@ -73,7 +68,7 @@
         EnableLoader();
         var sendD = JSON.parse($('#AddBookForm').serializeJSON());
         $.ajax({
-            url: RootURL() + 'Books/Add',
+            url: RootURL() + 'Book/Add',
             type: 'POST',
             dataType: 'json',
             contentType: 'application/json; charset=utf-8',
@@ -82,8 +77,8 @@
             success: function (resp) {
                 if(resp.ERROR_MESSAGES.length == 0)
                 {
-                    $('#SuccessMessages').AddMessage(resp.SUCCESS_MESSAGES);
-                    window.location.href = RootURL() + 'Books/Index/';
+                    sessionStorage.setItem("MESSAGE", JSON.stringify(resp.SUCCESS_MESSAGES));
+                    window.location.href = RootURL() + 'Book/Index/';
                     
                 } 
                 else 

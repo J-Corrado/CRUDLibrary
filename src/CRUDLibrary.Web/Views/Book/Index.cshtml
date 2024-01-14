@@ -1,46 +1,45 @@
-﻿@model CRUDLibrary.Domain.Models.AllAuthorsResponse
+﻿@model CRUDLibrary.Domain.Models.AllBooksResponse
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Authors</h1>
-<div id="ErrorMessages" class="alert-message-div">
-    </div>
-    <div id="SuccessMessages" class="alert-message-div alert-success">
+<h1>Books</h1>
+<div id="SuccessMessages" class="alert-message-div alert-success">
+       
     </div>
 <p>
-    <a class="btn btn-success" asp-action="Add">Add New</a>
+    <a class="btn btn-success" asp-action="Add">Create New</a>
 </p>
 <table class="table">
     <thead>
     <tr>
         <th>
-            Name
+            Title
         </th>
         <th>
-            Born
+            Genre
         </th>
         <th>
-            Died
+            Publication Date
         </th>
         <th></th>
     </tr>
     </thead>
     <tbody>
-    @foreach (var item in Model.AUTHORS) {
+    @foreach (var item in Model.BOOKS) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.NAME)
+                @Html.DisplayFor(modelItem => item.TITLE)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.BORN)
+                @Html.DisplayFor(modelItem => item.GENRE)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.DIED)
+                @Html.DisplayFor(modelItem => item.PUB_DATE)
             </td>
             <td>
-                <a class="btn btn-sm btn-warning" asp-action="Update" asp-route-id="@item.ID">Update</a> |
+                <a class="btn btn-sm btn-warning" asp-action="Update" asp-route-id="@item.ID">Edit</a> |
                 <a class="btn btn-sm btn-primary" asp-action="View" asp-route-id="@item.ID">Details</a> |
                 <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.ID">Delete</a>
             </td>

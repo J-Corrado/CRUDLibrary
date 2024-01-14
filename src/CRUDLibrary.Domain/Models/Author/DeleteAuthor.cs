@@ -8,12 +8,12 @@ namespace CRUDLibrary.Domain.Models
 {
     public class DeleteAuthorRequest : RequestModel
     {
-        public int AUTHOR_ID { get; set; }
+        public string AUTHOR_ID { get; set; }
     }
 
     public class DeleteAuthorResponse : ResponseModel
     {
-        public int AUTHOR_ID { get; set; }
+        public string AUTHOR_ID { get; set; } = string.Empty;
         public string AUTHOR_NAME { get; set; } = string.Empty;
         public string? AUTHOR_BORN { get; set; } = string.Empty;
         public string? AUTHOR_DIED { get; set; } = string.Empty;
@@ -21,8 +21,8 @@ namespace CRUDLibrary.Domain.Models
 
     public class DeleteAuthorSubmitRequest : RequestModel
     {
-        public int AUTHOR_ID { get; set; }
-        
+        public string AUTHOR_ID { get; set; } = string.Empty;
+
     }
 
     public class DeleteAuthorSubmitResponse : ResponseModel

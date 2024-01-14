@@ -61,7 +61,7 @@ public class BookBorrower : IBookBorrower
                     var newBookRequest = new AddBookSubmitRequest()
                     {
                         BOOK_TITLE = _Request.BOOK_TITLE,
-                        BOOK_GENRE = (BookGenre)_Request.BOOK_GENRE,
+                        BOOK_GENRE = _Request.BOOK_GENRE,
                         BOOK_PUB_DATE = _Request.BOOK_PUB_DATE.ToString()
                     };
                     

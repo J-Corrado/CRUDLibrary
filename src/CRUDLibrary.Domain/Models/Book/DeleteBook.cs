@@ -9,7 +9,7 @@ namespace CRUDLibrary.Domain.Models
 {
     public class DeleteBookRequest : RequestModel
     {
-        public int BOOK_ID { get; set; }
+        public string BOOK_ID { get; set; }
     }
 
     public class DeleteBookResponse : ResponseModel
@@ -22,7 +22,7 @@ namespace CRUDLibrary.Domain.Models
     
     public class DeleteBookSubmitRequest : RequestModel
     {
-        public int BOOK_ID { get; set; }
+        public string BOOK_ID { get; set; } = string.Empty;
     }
     public class DeleteBookSubmitResponse : ResponseModel
     {

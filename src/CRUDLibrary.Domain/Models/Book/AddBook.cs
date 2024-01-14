@@ -30,7 +30,7 @@ public class AddBookResponse : ResponseModel
 public class AddBookSubmitRequest : RequestModel
 {
     [CustomValidation(typeof(Validation), "ID", ErrorMessage = "Book ID#Invalid#")]
-    public int BOOK_ID { get; set; }
+    public string BOOK_ID { get; set; } = string.Empty;
     
     
     [Required(ErrorMessage = "Book Title#Required#")]
@@ -41,21 +41,22 @@ public class AddBookSubmitRequest : RequestModel
     public string? BOOK_PUB_DATE { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Book Genre#Required#")]
-    [CustomValidation(typeof(Validation), "DROP_DOWN_REQ", ErrorMessage = "Book Genre#Invalid#")]
-    public BookGenre BOOK_GENRE { get; set; }
+    [CustomValidation(typeof(Validation), "ID", ErrorMessage = "Book Genre#Invalid#")]
+    public string BOOK_GENRE { get; set; } = string.Empty;
 
     [CustomValidation(typeof(Validation), "ID", ErrorMessage = "Author ID#Invalid#")]
-    public int AUTHOR_ID { get; set; }
+    public string? AUTHOR_ID { get; set; } = string.Empty;
     
-    [Required(ErrorMessage = "Author Name#Required#")]
     [CustomValidation(typeof(Validation), "NAME", ErrorMessage = "Author Name#Invalid#")]
     public string AUTHOR_NAME { get; set; } = string.Empty;
 
-    [CustomValidation(typeof(Validation), "VAL_DATE", ErrorMessage = "Author Date of Birth#Invalid#")]
+    /*
+     [CustomValidation(typeof(Validation), "VAL_DATE", ErrorMessage = "Author Date of Birth#Invalid#")]
     public string? AUTHOR_BORN { get; set; } = string.Empty;
 
     [CustomValidation(typeof(Validation), "VAL_DATE", ErrorMessage = "Author Date of Death#Invalid#")]
     public string? AUTHOR_DIED { get; set; } = string.Empty;
+    */
 
 }
 

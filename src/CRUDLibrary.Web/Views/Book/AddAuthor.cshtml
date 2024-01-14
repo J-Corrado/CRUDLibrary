@@ -12,6 +12,12 @@
     <div class="col-md-4">
         <h5>Book</h5>
         <h6>@Model.BOOK_TITLE</h6>
+        <div id="ErrorMessages" class="alert-message-div">
+            @if (Model.ERROR_MESSAGES.Count() > 0)
+            {
+                @Html.Raw(Model.DisplayErrorMessages());
+            }
+        </div>
         <form asp-action="AddAuthor" id="NewAuthor">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="BOOK_ID" />

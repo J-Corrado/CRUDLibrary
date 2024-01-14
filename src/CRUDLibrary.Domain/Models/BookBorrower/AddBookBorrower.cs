@@ -53,9 +53,9 @@ public class AddBookBorrowerSubmitRequest : RequestModel
 
     [CustomValidation(typeof(Validation), "VAL_DATE", ErrorMessage = "Book Publication Date#Invalid#")]
     public string? BOOK_PUB_DATE { get; set; } = string.Empty;
-    
+
     [CustomValidation(typeof(Validation), "DROP_DOWN_REQ", ErrorMessage = "Book Genre#Invalid#")]
-    public BookGenre? BOOK_GENRE { get; set; }
+    public string? BOOK_GENRE { get; set; } = string.Empty;
 
     [CustomValidation(typeof(Validation), "VAL_DATE", ErrorMessage = "Book Borrowed Date#Invalid#")]
     public string? BORROWED_DATE { get; set; } = string.Empty;
