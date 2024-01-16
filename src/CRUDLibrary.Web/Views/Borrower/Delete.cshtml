@@ -1,0 +1,64 @@
+﻿@model CRUDLibrary.Domain.Models.DeleteBorrowerResponse
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Delete</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Borrower</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            Borrower
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.BORROWER_NAME)
+        </dd>
+        <dt class = "col-sm-2">
+            ID
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.BORROWER_ID)
+        </dd>
+    </dl>
+    
+    <form id="DeleteBorrowerForm">
+        <input type="hidden" asp-for="BORROWER_ID" />
+        <button type="button" id="DeleteBorrowerSubmit" class="btn btn-danger">Delete</button> |
+    </form>
+    <a asp-action="Index">Back to List</a>
+</div>
+<script>
+    
+    $('#DeleteBorrowerSubmit').on('click',function(){
+        EnableLoader();
+        var sendD = JSON.parse($('#DeleteBorrowerForm').serializeJSON());
+        $.ajax({
+            url: RootURL() + 'Borrower/Delete/' + @Model.BORROWER_ID,
+            type: 'POST',
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            cache: false,
+            data: JSON.stringify(sendD),
+            success: function (resp) {
+                if(resp.ERROR_MESSAGES.length == 0)
+                {
+                    sessionStorage.setItem("MESSAGE", JSON.stringify(resp.SUCCESS_MESSAGES));
+                    window.location.href = RootURL() + 'Borrower/Index/';
+                } 
+                else 
+                {
+                    DisableLoader();
+                    $('#ErrorMessages').AddMessages(resp.ERROR_MESSAGES);
+                }
+            },
+            error: function (r) 
+            {
+                DisableLoader();
+            }
+        });
+      });
+</script>

@@ -1,9 +1,11 @@
+using System.Runtime.InteropServices.JavaScript;
 using CRUDLibrary.Domain.Interfaces;
 using CRUDLibrary.Data.LIB_DB;
 using CRUDLibrary.Data.LIB_DB.Enum;
 using CRUDLibrary.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.Configuration;
 
 namespace CRUDLibrary.Domain.Services
@@ -88,19 +90,7 @@ namespace CRUDLibrary.Domain.Services
             AddAuthorSubmitResponse _Response = new AddAuthorSubmitResponse();
             try
             {
-                //var author = await _context.Authors.FirstOrDefaultAsync(a => a.AuthorId == _Request.AUTHOR_ID);
-
-                // if (author != null)
-                // {
-                // If AUTHOR_ID is found, Author exists
-                //     _Response.ERROR_MESSAGES.Add(new MessageListItem
-                //         { MESSAGE = "Author with given AUTHOR_ID already exists" });
-                //    return _Response;
-
-                //}
-                //else if (!string.IsNullOrEmpty(_Request.AUTHOR_NAME))
-                //{
-                // If a AUTHOR_NAME is provided, create a new author
+              
                 Data.LIB_DB.Author author = new Data.LIB_DB.Author();
                 
                 author.Name = _Request.AUTHOR_NAME;
@@ -109,7 +99,7 @@ namespace CRUDLibrary.Domain.Services
                     
                     _context.Authors.Add(author);
                     await _context.SaveChangesAsync();
-                //}
+                
                 var respAuth = await _context.Authors.FirstOrDefaultAsync(a =>
                     a.Name == _Request.AUTHOR_NAME && a.DateOfBirth == _Request.AUTHOR_BORN &&
                     a.DateOfDeath == _Request.AUTHOR_DIED);
@@ -357,16 +347,6 @@ namespace CRUDLibrary.Domain.Services
 
             try
             {
-                /*
-                 var book = await _context.Books.FirstOrDefaultAsync(b => b.BookId == _Request.BOOK_ID);
-
-                if (book != null)
-                {
-                    _Response.ERROR_MESSAGES.Add(new MessageListItem()
-                        { MESSAGE = "Book with given BOOK_ID already exists" });
-                    return _Response;
-                } 
-                */
                 if (!string.IsNullOrEmpty(_Request.BOOK_TITLE))
                 {
                     var book = new Data.LIB_DB.Book()
@@ -586,69 +566,21 @@ namespace CRUDLibrary.Domain.Services
             
             try
             {
-                var borrower = await _context.Borrowers.FirstOrDefaultAsync(b => b.BorrowerId == _Request.BORROWER_ID);
-
-                if (borrower != null)
+                if (!string.IsNullOrEmpty(_Request.BORROWER_NAME))
                 {
-                    _Response.ERROR_MESSAGES.Add(new MessageListItem(){MESSAGE = "Borrower with BORROWER_ID already exists"});
-                    return _Response;
-                }
-                else if (!string.IsNullOrEmpty(_Request.BORROWER_NAME))
-                {
-                    borrower = new Data.LIB_DB.Borrower()
+                    var borrower = new Data.LIB_DB.Borrower()
                     {
                         Name = _Request.BORROWER_NAME
                     };
                     _context.Borrowers.Add(borrower);
                     await _context.SaveChangesAsync();
-                    _Response.RESP_BORROWER_ID = borrower.BorrowerId;
+                    _Response.ID = borrower.BorrowerId;
                 }
-                else
-                {
-                    _Response.ERROR_MESSAGES.Add(new MessageListItem() { MESSAGE = "Borrower name is required" });
-                }
-
-                if (_Request.BOOK_ID != null)
-                {
-                    var book = await _context.Books.FirstOrDefaultAsync(b => b.BookId == _Request.BOOK_ID);
-                    var bookBorrow = new Data.LIB_DB.BookBorrower()
-                    {
-                        Book = book,
-                        BookId = book.BookId,
-                        Borrower = borrower,
-                        BorrowerId = borrower.BorrowerId,
-                        BorrowedDate = DateTime.Now.ToString(),
-                    };
-                    _context.BookBorrows.Add(bookBorrow);
-                    _context.SaveChangesAsync();
-                }
-                else if (!string.IsNullOrEmpty(_Request.BOOK_TITLE))
-                {
-                    var book = new Data.LIB_DB.Book()
-                    {
-                        Title = _Request.BOOK_TITLE,
-                        PublicationDate = _Request.BOOK_PUB_DATE,
-                        Genre = (Data.LIB_DB.Enum.BookGenre)_Request.BOOK_GENRE
-                    };
-                    _context.Books.Add(book);
-                    _context.SaveChangesAsync();
-                    
-                    var bookBorrow = new Data.LIB_DB.BookBorrower()
-                    {
-                        Book = book,
-                        BookId = book.BookId,
-                        Borrower = borrower,
-                        BorrowerId = borrower.BorrowerId,
-                        BorrowedDate = DateTime.Now.ToString(),
-                    };
-                    _context.BookBorrows.Add(bookBorrow);
-                    _context.SaveChangesAsync();
-                }
-
             }
             catch (Exception ex)
             {
-                _Response.ERROR_MESSAGES.Add(new MessageListItem(){MESSAGE = "Borrower name is required"});
+                Console.WriteLine(ex);
+                _Response.ERROR_MESSAGES.Add(new MessageListItem(){MESSAGE = "Valid Borrower name is required"});
             }
 
             return _Response;
@@ -664,7 +596,9 @@ namespace CRUDLibrary.Domain.Services
                     BORROWER_ID = bb.BorrowerId,
                     BOOK_ID = bb.BookId,
                     BORROWER_NAME = bb.Borrower.Name,
-                    BOOK_TITLE = bb.Book.Title
+                    BOOK_TITLE = bb.Book.Title,
+                    BORROWED_DATE = bb.BorrowedDate,
+                    RETURNED_DATE = bb.ReturnedDate ?? string.Empty
                 })
                 .ToListAsync();
         }
@@ -673,7 +607,11 @@ namespace CRUDLibrary.Domain.Services
         {
             UpdateBorrowerResponse _Response = new();
 
-            
+            if (_Response.ERROR_MESSAGES.Count == 0)
+            {
+                _Response.BORROWER_ID = _Request.BORROWER_ID;
+                _Response.BORROWER_NAME = _Request.REQ_BORROWER_NAME;
+            }
             
             return _Response;
         }
@@ -768,47 +706,56 @@ namespace CRUDLibrary.Domain.Services
         public async Task<AddAuthorBookSubmitResponse> InsertAddAuthorBook(AddAuthorBookSubmitRequest _Request)
         {
             AddAuthorBookSubmitResponse _Response = new AddAuthorBookSubmitResponse();
-            var author = await _context.Authors.FirstOrDefaultAsync(a => a.AuthorId == int.Parse(_Request.AUTHOR_ID));
+
+
+            Data.LIB_DB.Author author = new();
+            
+            Data.LIB_DB.Book book = new(); 
 
             if (!string.IsNullOrEmpty(_Request.BOOK_ID))
             {
-                var book = await _context.Books.FirstOrDefaultAsync(b => b.BookId == int.Parse(_Request.BOOK_ID));
-                var authorBook = new Data.LIB_DB.AuthorBook()
-                {
-                    Author = author, 
-                    AuthorId = author.AuthorId, 
-                    Book = book, 
-                    BookId = book.BookId
-                };
-                _context.AuthorBooks.Add(authorBook);
-                await _context.SaveChangesAsync();
-                var respAuthorBook = await _context.AuthorBooks.FirstOrDefaultAsync(ab => ab.AuthorId == int.Parse(_Request.AUTHOR_ID) && ab.BookId == int.Parse(_Request.BOOK_ID));
-                _Response.ID = respAuthorBook.AuthorBookId;
+                book = await _context.Books.FirstOrDefaultAsync(x => x.BookId == int.Parse(_Request.BOOK_ID));
+                
             }
             else if (!string.IsNullOrEmpty(_Request.BOOK_TITLE))
             {
-                var book = new Data.LIB_DB.Book()
-                {
-                    Title = _Request.BOOK_TITLE,
-                    Genre = (BookGenre)int.Parse(_Request.BOOK_GENRE),
-                    PublicationDate = _Request.BOOK_PUB_DATE
-                };
+                book.Title = _Request.BOOK_TITLE;
+                book.Genre = (BookGenre)int.Parse(_Request.BOOK_GENRE);
+                book.PublicationDate = _Request.BOOK_PUB_DATE;
+                
                 _context.Books.Add(book);
                 await _context.SaveChangesAsync();
-                var respBook = await _context.Books.FirstOrDefaultAsync(b => b.Title == _Request.BOOK_TITLE && b.Genre == (BookGenre)int.Parse(_Request.BOOK_GENRE) && b.PublicationDate == _Request.BOOK_PUB_DATE);
-                var authorBook = new Data.LIB_DB.AuthorBook()
-                {
-                    Author = author, 
-                    AuthorId = author.AuthorId, 
-                    Book = respBook, 
-                    BookId = respBook.BookId
-                };
-                _context.AuthorBooks.Add(authorBook);
-                await _context.SaveChangesAsync();
-                var respAuthorBook = await _context.AuthorBooks.FirstOrDefaultAsync(ab =>
-                    ab.AuthorId == author.AuthorId && ab.BookId == respBook.BookId);
-                _Response.ID = respAuthorBook.AuthorBookId;
             }
+
+            if (!string.IsNullOrEmpty(_Request.AUTHOR_ID))
+            {
+                author = await _context.Authors.FirstOrDefaultAsync(a => a.AuthorId == int.Parse(_Request.AUTHOR_ID));
+                
+            }
+            else if (!string.IsNullOrEmpty(_Request.AUTHOR_NAME))
+            {
+                author.Name = _Request.AUTHOR_NAME;
+                author.DateOfBirth = _Request.AUTHOR_BORN;
+                author.DateOfDeath = _Request.AUTHOR_DIED ?? string.Empty;
+            
+                _context.Authors.Add(author);
+                await _context.SaveChangesAsync();
+            }
+
+            var authorBookAuthor = await _context.Authors.FirstOrDefaultAsync(x => x.AuthorId == author.AuthorId);
+            var authorBookBook = await _context.Books.FirstOrDefaultAsync(x => x.BookId == book.BookId);
+            
+            var authorBook = new Data.LIB_DB.AuthorBook()
+            {
+                AuthorId = authorBookAuthor.AuthorId,
+                BookId = authorBookBook.BookId
+            };
+            
+            _context.AuthorBooks.Add(authorBook);
+            await _context.SaveChangesAsync();
+            
+            _Response.BOOK_ID = authorBookBook.BookId;
+            _Response.AUTHOR_ID = authorBookAuthor.AuthorId;
             
             return _Response;
         }
@@ -859,10 +806,10 @@ namespace CRUDLibrary.Domain.Services
         public async Task<DeleteAuthorBookResponse> QueryDeleteAuthorBook(DeleteAuthorBookRequest _Request)
               {
                   DeleteAuthorBookResponse _Response = new();
-                  _Response.AUTHOR_ID = _Request.AUTHOR_ID;
-                  _Response.BOOK_ID = _Request.BOOK_ID;
+                  _Response.AUTHOR_ID = int.Parse(_Request.AUTHOR_ID);
+                  _Response.BOOK_ID = int.Parse(_Request.BOOK_ID);
                   _Response.AUTHOR_BOOK_ID = await _context.AuthorBooks
-                      .Where(ab => ab.AuthorId == _Request.AUTHOR_ID && ab.BookId == _Request.BOOK_ID)
+                      .Where(ab => ab.AuthorId == int.Parse(_Request.AUTHOR_ID) && ab.BookId == int.Parse(_Request.BOOK_ID))
                       .Select(ab=> ab.AuthorBookId).FirstOrDefaultAsync();
       
                   return _Response;
@@ -871,13 +818,11 @@ namespace CRUDLibrary.Domain.Services
         {
             DeleteAuthorBookSubmitResponse _Response = new DeleteAuthorBookSubmitResponse();
             var authorBook =
-                await _context.AuthorBooks.FirstOrDefaultAsync(ab => ab.AuthorBookId == _Request.AUTHOR_BOOK_ID);
+                await _context.AuthorBooks.FirstOrDefaultAsync(ab => ab.AuthorBookId == int.Parse(_Request.AUTHOR_BOOK_ID));
             if (authorBook != null)
             {
                 _context.AuthorBooks.Remove(authorBook);
                 await _context.SaveChangesAsync();
-                _Response.Successful = true;
-                _Response.Message = "Author book deleted successfully";
             }
 
             return _Response;
@@ -890,38 +835,46 @@ namespace CRUDLibrary.Domain.Services
         {
             AddBookBorrowerSubmitResponse _Response = new AddBookBorrowerSubmitResponse();
 
-            var book = await _context.Books.FirstOrDefaultAsync(b => b.BookId == _Request.BOOK_ID);
-            var borrower = await _context.Borrowers.FirstOrDefaultAsync(b => b.BorrowerId == _Request.BORROWER_ID);
-            if (book == null)
+            var book = await _context.Books.FirstOrDefaultAsync(x => x.BookId == int.Parse(_Request.BOOK_ID));;
+            var borrower = await _context.Borrowers.FirstOrDefaultAsync(x =>
+                x.BorrowerId == int.Parse(_Request.BORROWER_ID));
+            
+            if(!string.IsNullOrEmpty(_Request.BOOK_TITLE))
             {
-                book = new Data.LIB_DB.Book()
-                {
-                    Title = _Request.BOOK_TITLE,
-                    Genre = (BookGenre)int.Parse(_Request.BOOK_GENRE),
-                    PublicationDate = _Request.BOOK_PUB_DATE
-                };
+                book.Title = _Request.BOOK_TITLE;
+                book.Genre = (BookGenre)int.Parse(_Request.BOOK_GENRE);
+                book.PublicationDate= _Request.BOOK_PUB_DATE;
+                
                 _context.Books.Add(book);
                 await _context.SaveChangesAsync();
             }
-
-            if (borrower == null)
+            
+            if (!string.IsNullOrEmpty(_Request.BORROWER_NAME))
             {
-                borrower = new Data.LIB_DB.Borrower()
-                {
-                    Name = _Request.BORROWER_NAME
-                };
+                borrower.Name = _Request.BORROWER_NAME; 
+                
                 _context.Borrowers.Add(borrower);
                 await _context.SaveChangesAsync();
+                
             }
+
+            var bookBorrowerBorrower =
+                await _context.Borrowers.FirstOrDefaultAsync(x => x.BorrowerId == borrower.BorrowerId);
+            var bookBorrowerBook =
+                await _context.Books.FirstOrDefaultAsync(x => x.BookId == book.BookId);
+            
             var bookBorrower = new Data.LIB_DB.BookBorrower()
-            {
-                Book = book,
-                BookId = book.BookId, 
-                Borrower = borrower,
-                BorrowerId = borrower.BorrowerId
-            };
+             {
+                 BookId = bookBorrowerBook.BookId, 
+                 BorrowerId = bookBorrowerBorrower.BorrowerId,
+                 BorrowedDate = DateTime.Now.ToString()
+             };
+            
             _context.BookBorrows.Add(bookBorrower);
             await _context.SaveChangesAsync();
+            
+            _Response.BORROWER_ID = int.Parse(_Request.BORROWER_ID);
+            _Response.BOOK_ID = int.Parse(_Request.BOOK_ID);
             
             return _Response;
         }
@@ -934,19 +887,27 @@ namespace CRUDLibrary.Domain.Services
             {
                 var borrowedBook = await _context.BookBorrows.FirstOrDefaultAsync(x =>
                                  x.BookId == _Request.BOOK_ID && x.BorrowerId == _Request.BORROWER_ID && x.BorrowedDate != null && x.ReturnedDate == null);
+                var book = await _context.Books.FirstOrDefaultAsync(x => x.BookId == borrowedBook.BookId);
+                var borrower =
+                    await _context.Borrowers.FirstOrDefaultAsync(x => x.BorrowerId == borrowedBook.BorrowerId);
                 _Response.BOOK_BORROWER_ID = borrowedBook.BookBorrowId;
-                _Response.BORROWER_ID = _Request.BORROWER_ID;
-                _Response.BOOK_ID = _Request.BOOK_ID;
+                _Response.BORROWER_ID = borrower.BorrowerId;
+                _Response.BORROWER_NAME = borrower.Name;
+                _Response.BOOK_ID = book.BookId;
+                _Response.BOOK_TITLE = book.Title;
                 _Response.BORROWED_DATE = borrowedBook.BorrowedDate;
             }
-
+            
             return _Response;
         }
         public async Task<UpdateBookBorrowerSubmitResponse> UpdateBookBorrower(UpdateBookBorrowerSubmitRequest _Request)
         {
             UpdateBookBorrowerSubmitResponse _Response = new UpdateBookBorrowerSubmitResponse();
             var bookBorrower =
-                await _context.BookBorrows.FirstOrDefaultAsync(bb => bb.BookBorrowId == _Request.BOOK_BORROWER_ID);
+                await _context.BookBorrows.FirstOrDefaultAsync(bb => bb.BookBorrowId == int.Parse(_Request.BOOK_BORROWER_ID));
+            var book = await _context.Books.FirstOrDefaultAsync(x => x.BookId == bookBorrower.BookId);
+            var borrower =
+                await _context.Borrowers.FirstOrDefaultAsync(x => x.BorrowerId == bookBorrower.BorrowerId);
             if (bookBorrower != null)
             {
                 bookBorrower.ReturnedDate = DateTime.Now.ToString();
@@ -955,6 +916,8 @@ namespace CRUDLibrary.Domain.Services
                 await _context.SaveChangesAsync();
             }
 
+            _Response.BORROWER_ID = borrower.BorrowerId;
+            _Response.BOOK_ID = book.BookId;
             return _Response;
         }
 
@@ -976,13 +939,11 @@ namespace CRUDLibrary.Domain.Services
         {
             DeleteBookBorrowerSubmitResponse _Response = new();
             
-            var bookBorrower = await _context.BookBorrows.FirstOrDefaultAsync(bb => bb.BookBorrowId == _Request.BOOK_BORROWER_ID);
+            var bookBorrower = await _context.BookBorrows.FirstOrDefaultAsync(bb => bb.BookBorrowId == int.Parse(_Request.BOOK_BORROWER_ID));
             if (bookBorrower != null)
             {
                 _context.BookBorrows.Remove(bookBorrower);
                 await _context.SaveChangesAsync();
-                _Response.Successful = true;
-                _Response.Message = "Book borrower deleted successfully";
             }
             return _Response;
         }
@@ -1023,7 +984,7 @@ namespace CRUDLibrary.Domain.Services
         {
             List<MessageListItem> _Response = new();
             var _dup_borrowerID = await (from borrower in _context.Borrowers
-                where borrower.BorrowerId == _Request.BORROWER_ID
+                where borrower.BorrowerId == int.Parse(_Request.BORROWER_ID)
                 select borrower.BorrowerId).FirstOrDefaultAsync();
             if (_dup_borrowerID != 0)
             {

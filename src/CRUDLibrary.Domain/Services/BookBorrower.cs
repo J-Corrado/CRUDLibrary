@@ -34,15 +34,36 @@ public class BookBorrower : IBookBorrower
     public async Task<AddBookBorrowerResponse> GetAddBookBorrower(AddBookBorrowerRequest _Request)
         {
             AddBookBorrowerResponse _Response = new();
+            
             if (_Response.ERROR_MESSAGES.Count == 0)
             {
-                _Response.RESP_BOOK_ID = _Request.REQ_BOOK_ID;
-                _Response.RESP_BOOK_TITLE = _Request.BOOK_TITLE;
-                
-                _Response.RESP_BORROWER_ID = _Request.REQ_BORROWER_ID;
-                _Response.RESP_BORROWER_NAME = _Request.BORROWER_NAME;
+                if (!string.IsNullOrEmpty(_Request.BOOK_ID))
+                {
+                    var book = await _DAL.GetBookById(int.Parse(_Request.BOOK_ID));
+                                    
+                    _Response.BOOK_ID = book.BookId;
+                    _Response.BOOK_TITLE = book.Title;
+                }
+                else
+                {
+                    _Response.BOOK_TITLE = _Request.BOOK_TITLE;
+                    _Response.BOOK_GENRE = _Request.BOOK_GENRE;
+                    _Response.BOOK_PUB_DATE = _Request.BOOK_PUB_DATE;
+                }
+
+                if (!string.IsNullOrEmpty(_Request.BORROWER_ID))
+                {
+                    var borrower = await _DAL.GetBorrowerById(int.Parse(_Request.BORROWER_ID)); 
+                    _Response.BORROWER_ID = borrower.BorrowerId;
+                    _Response.BORROWER_NAME = borrower.Name;
+                }
+                else
+                {
+                    _Response.BORROWER_NAME = _Request.BORROWER_NAME;
+                }
                 
                 _Response.BOOKS = await _DAL.QueryGetBooks();
+                _Response.GENRES = await _DAL.QueryGetGenres();
                 _Response.BORROWERS = await _DAL.QueryGetBorrowers();
             }
             return _Response;
@@ -51,71 +72,13 @@ public class BookBorrower : IBookBorrower
     public async Task<AddBookBorrowerSubmitResponse> SubmitAddBookBorrower(AddBookBorrowerSubmitRequest _Request)
         {
             AddBookBorrowerSubmitResponse _Response = new();
-            var borrower = await _DAL.GetBorrowerById(_Request.BORROWER_ID);
-            var book = await _DAL.GetBookById(_Request.BOOK_ID);
-                
-                // If no Book Id is provided but an Book Title is provided, create a new book
-                if (book == null && !string.IsNullOrEmpty(_Request.BOOK_TITLE))
-                {
-                    AddBookSubmitResponse _rtn = new();
-                    var newBookRequest = new AddBookSubmitRequest()
-                    {
-                        BOOK_TITLE = _Request.BOOK_TITLE,
-                        BOOK_GENRE = _Request.BOOK_GENRE,
-                        BOOK_PUB_DATE = _Request.BOOK_PUB_DATE.ToString()
-                    };
-                    
-                    _validate.SubmitAddBook(newBookRequest);
-                    if (_rtn.ERROR_MESSAGES.Count == 0)
-                    {
-                        var newBookResponse = await _DAL.InsertAddBook(newBookRequest);
-                        _Response.RESP_BOOK_ID = newBookResponse.ID;
-                    }
-                    
-                }
-                else if (book != null)
-                {
-                    _Response.RESP_BOOK_ID = book.BookId;
-                }
-                else
-                {
-                    throw new Exception("Book information is insufficient.");
-                }
-                
-                // If a Borrower Id is not provided, create a new Borrower.
-                if (_Request.BORROWER_ID == null)
-                {
-                    AddBorrowerSubmitResponse _rtn = new();
-                    var newBorrowerRequest = new AddBorrowerSubmitRequest()
-                    {
-                        BORROWER_NAME = _Request.BORROWER_NAME
-                    };
-                    _validate.SubmitAddBorrower(newBorrowerRequest);
-                    if (_rtn.ERROR_MESSAGES.Count == 0)
-                    {
-                        var newBorrowerResponse = await _DAL.InsertAddBorrower(newBorrowerRequest);
-                        _Response.RESP_BORROWER_ID = newBorrowerResponse.ID;
-                    }
-                }
-                else
-                {
-                    if (borrower == null)
-                    {
-                        throw new Exception("Borrower not found.");
-                    }
-                    _Response.RESP_BORROWER_ID = _Request.BORROWER_ID;
-                }
-                
-                // Create a BookBorrower relation
-                var newBookBorrowerRequest = new AddBookBorrowerSubmitRequest
-                {
-                    BORROWER_ID = borrower.BorrowerId, 
-                    BOOK_ID = book.BookId
-                };
-                var newBookBorrowerResponse = await _DAL.InsertAddBookBorrower(newBookBorrowerRequest);
-                    
-                if (newBookBorrowerResponse == null)
-                    throw new Exception("Failed to create BookBorrower relation.");
+            if (_Response.ERROR_MESSAGES.Count == 0)
+            {
+                _Response = await _DAL.InsertAddBookBorrower(_Request);
+            }
+
+            _Response.BOOK_ID = int.Parse(_Request.BOOK_ID);
+            _Response.BORROWER_ID = int.Parse(_Request.BORROWER_ID);
             return _Response;
         }
     //------------------------------------
@@ -127,6 +90,8 @@ public class BookBorrower : IBookBorrower
                 _Response = await _DAL.QueryUpdateBookBorrower(_Request);
             }
 
+            _Response.BOOK_ID = _Request.BOOK_ID;
+            _Response.BORROWER_ID = _Request.BORROWER_ID;
             return _Response;
         }
     //------------------------------------
@@ -138,7 +103,7 @@ public class BookBorrower : IBookBorrower
                 {
                     _Response = await _DAL.UpdateBookBorrower(_Request);
                 }
-            
+                
                 return _Response;
          }
     //------------------------------------

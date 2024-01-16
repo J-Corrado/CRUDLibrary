@@ -50,13 +50,6 @@ public class AddBookSubmitRequest : RequestModel
     [CustomValidation(typeof(Validation), "NAME", ErrorMessage = "Author Name#Invalid#")]
     public string AUTHOR_NAME { get; set; } = string.Empty;
 
-    /*
-     [CustomValidation(typeof(Validation), "VAL_DATE", ErrorMessage = "Author Date of Birth#Invalid#")]
-    public string? AUTHOR_BORN { get; set; } = string.Empty;
-
-    [CustomValidation(typeof(Validation), "VAL_DATE", ErrorMessage = "Author Date of Death#Invalid#")]
-    public string? AUTHOR_DIED { get; set; } = string.Empty;
-    */
 
 }
 

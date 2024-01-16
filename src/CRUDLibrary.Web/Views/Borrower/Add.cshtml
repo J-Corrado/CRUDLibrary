@@ -1,0 +1,62 @@
+﻿@model CRUDLibrary.Domain.Models.AddBorrowerResponse
+
+@{
+    ViewData["Title"] = "Add";
+}
+
+<h1>Add</h1>
+<h4>Borrower</h4>
+<hr />
+<form id="AddBorrowerForm">
+<div class="row">
+    <div class="col-md-4">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="BORROWER_NAME" class="control-label"></label>
+                <input asp-for="BORROWER_NAME" class="form-control" />
+                <span asp-validation-for="BORROWER_NAME" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <button type="button" id="AddBorrowerSubmit" class="btn btn-primary" >Add</button>
+            </div>
+    </div>
+</div>
+</form>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+<script>
+    
+    $('#AddBorrowerSubmit').on('click',function(){
+        EnableLoader();
+        var sendD = JSON.parse($('#AddBorrowerForm').serializeJSON());
+        $.ajax({
+            url: RootURL() + 'Borrower/Add',
+            type: 'POST',
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            cache: false,
+            data: JSON.stringify(sendD),
+            success: function (resp) {
+                if(resp.ERROR_MESSAGES.length == 0)
+                {
+                    sessionStorage.setItem("MESSAGE", JSON.stringify(resp.SUCCESS_MESSAGES));
+                    window.location.href = RootURL() + 'Borrower/Index/';
+                } 
+                else 
+                {
+                    DisableLoader();
+                    $('#ErrorMessages').AddMessages(resp.ERROR_MESSAGES);
+                }
+            },
+            error: function (r) 
+            {
+                DisableLoader();
+            }
+        });
+      });
+</script>

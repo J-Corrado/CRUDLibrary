@@ -9,14 +9,6 @@
 
 <div>
     <h4>Book</h4>
-    <div id="ErrorMessages" class="alert-message-div">
-        @if (Model.ERROR_MESSAGES.Count() > 0)
-        {
-            @Html.Raw(Model.DisplayErrorMessages());
-        }
-    </div>
-    <div id="SuccessMessages" class="alert-message-div">
-    </div>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -65,7 +57,7 @@
                 {
                     ViewBag.Borrow = borrower;
                     <li class="list-group-item">
-                        <a asp-controller="Borrowers" asp-action="View" asp-route-id="@borrower.BORROWER_ID">@borrower.BORROWER_NAME</a>
+                        <a asp-controller="Borrower" asp-action="View" asp-route-id="@borrower.BORROWER_ID">@borrower.BORROWER_NAME</a>
                         <span> | </span>
                         <span><strong>Borrowed On:</strong> @borrower.BORROWED_DATE</span>
                         <span> | </span>

@@ -23,7 +23,7 @@
             @Html.DisplayFor(model => model.BORROWER_ID)
         </dd>
         <dt class="col-sm-2">
-            Books(s) Borrowed
+            Book(s) Borrowed
         </dt>
         <dd class="col-sm-10">
             <ul class="list-group list-group-flush">
@@ -34,7 +34,7 @@
                         <span> | </span>
                         <span><strong>Borrowed On:</strong> @book.BORROWED_DATE</span>
                         <span> | </span>
-                        @if (book.RETURNED_DATE != null)
+                        @if (!string.IsNullOrEmpty(book.RETURNED_DATE))
                         {
                             <span><strong>Returned On:</strong> @book.RETURNED_DATE</span>
                         }

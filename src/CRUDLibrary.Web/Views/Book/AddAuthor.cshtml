@@ -12,40 +12,35 @@
     <div class="col-md-4">
         <h5>Book</h5>
         <h6>@Model.BOOK_TITLE</h6>
-        <div id="ErrorMessages" class="alert-message-div">
-            @if (Model.ERROR_MESSAGES.Count() > 0)
-            {
-                @Html.Raw(Model.DisplayErrorMessages());
-            }
-        </div>
-        <form asp-action="AddAuthor" id="NewAuthor">
+        <form id="AddAuthorBookForm">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="BOOK_ID" />
+            
             <div class="form-group">
-                <label asp-for="AUTHOR_ID">Author</label>
-                <select asp-for="AUTHOR_ID" asp-items="@(new SelectList(Model.AUTHORS, "Id", "Name"))" class="form-control">
+                <label for="AUTHOR_ID">Author</label>
+                <select asp-for="AUTHOR_ID" id="AUTHOR_ID" name="AUTHOR_ID" asp-items="@(new SelectList(Model.AUTHORS, "ID", "NAME"))" class="form-control">
                     <option value="">Select an existing author</option>
                 </select>
-                <span asp-validation-for="AUTHOR_ID" class="text-danger"></span>
+                <span validation-for="AUTHOR_ID" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="AUTHOR_NAME">Or enter a new author's name</label>
-                <input asp-for="AUTHOR_NAME" id="NewAuthorName" name="NewAuthorName" type="text" class="form-control" />
+                <label for="AUTHOR_NAME">Or enter a new author's name</label>
+                <input asp-for="AUTHOR_NAME" id="AUTHOR_NAME" name="AUTHOR_NAME" type="text" class="form-control" />
                 <span asp-validation-for="AUTHOR_NAME" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="AUTHOR_BORN" class="control-label">Born</label>
-                <input asp-for="AUTHOR_BORN" class="form-control" />
+                <label for="AUTHOR_BORN" class="control-label">Born</label>
+                <input asp-for="AUTHOR_BORN" id="AUTHOR_BORN" name="AUTHOR_BORN" type="date" class="form-control" />
                 <span asp-validation-for="AUTHOR_BORN" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="AUTHOR_BORN" class="control-label">Died</label>
-                <input asp-for="AUTHOR_BORN" class="form-control" />
+                <label for="AUTHOR_DIED" class="control-label">Died</label>
+                <input asp-for="AUTHOR_DIED" id="AUTHOR_DIED" name="AUTHOR_DIED" type="date" class="form-control" />
                 <span asp-validation-for="AUTHOR_BORN" class="text-danger"></span>
             </div>
             <br />
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <button type="button" id="SubmitAuthorBook" class="btn btn-primary">Add</button>
             </div>
         </form>
     </div>
@@ -59,3 +54,34 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     
 }
+<script>
+    
+    $('#SubmitAuthorBook').on('click',function(){
+        EnableLoader();
+        var sendD = JSON.parse($('#AddAuthorBookForm').serializeJSON());
+        $.ajax({
+            url: RootURL() + 'Book/AddAuthor/' + @Model.BOOK_ID,
+            type: 'POST',
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            cache: false,
+            data: JSON.stringify(sendD),
+            success: function (resp) {
+                if(resp.ERROR_MESSAGES.length == 0)
+                {
+                    sessionStorage.setItem("MESSAGE", JSON.stringify(resp.SUCCESS_MESSAGES));
+                    window.location.href = RootURL() + 'Book/View/' + resp.BOOK_ID.toString();
+                } 
+                else 
+                {
+                    DisableLoader();
+                    $('#ErrorMessages').AddMessages(resp.ERROR_MESSAGES);
+                }
+            },
+            error: function (r) 
+            {
+                DisableLoader();
+            }
+        });
+      });
+</script>

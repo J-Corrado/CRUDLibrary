@@ -10,8 +10,14 @@ namespace CRUDLibrary.Domain.Models
     {
         public int AUTHOR_BOOK_ID { get; set; }
 
-        public int AUTHOR_ID { get; set; }
-        public int BOOK_ID { get; set; }
+        public string? AUTHOR_ID { get; set; }
+        public string AUTHOR_NAME { get; set; } = string.Empty;
+        public string? AUTHOR_BORN { get; set; } = string.Empty;
+        public string? AUTHOR_DIED { get; set; } = string.Empty;
+        public string? BOOK_ID { get; set; }
+        public string? BOOK_TITLE { get; set; } = string.Empty;
+        public string? BOOK_PUB_DATE { get; set; } = string.Empty;
+        public GenreDto? BOOK_GENRE { get; set; }
     }
 
     public class DeleteAuthorBookResponse : ResponseModel
@@ -20,21 +26,22 @@ namespace CRUDLibrary.Domain.Models
 
         public int AUTHOR_ID { get; set; }
         public string AUTHOR_NAME { get; set; } = string.Empty;
+        public string? AUTHOR_BORN { get; set; } = string.Empty;
+        public string? AUTHOR_DIED { get; set; } = string.Empty;
         
         public int BOOK_ID { get; set; }
-        public string BOOK_TITLE { get; set; } = string.Empty;
+        public string? BOOK_TITLE { get; set; } = string.Empty;
+        public string? BOOK_PUB_DATE { get; set; } = string.Empty;
+        public GenreDto? BOOK_GENRE { get; set; }
     }
     public class DeleteAuthorBookSubmitRequest : RequestModel
     {
-        public int AUTHOR_BOOK_ID { get; set; }
-
-        public int AUTHOR_ID { get; set; }
-        public int BOOK_ID { get; set; }
+        public string AUTHOR_BOOK_ID { get; set; } = string.Empty;
     }
 
     public class DeleteAuthorBookSubmitResponse : ResponseModel
     {
-        public bool Successful { get; set; }
-        public string Message { get; set; }
+        public int AUTHOR_ID { get; set; }
+        public int BOOK_ID { get; set; }
     }
 }

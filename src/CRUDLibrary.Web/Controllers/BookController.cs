@@ -100,13 +100,13 @@ namespace CRUDLibrary.Web.Controllers
 
             try
             {
-                AddBookBorrowerRequest _Request = new AddBookBorrowerRequest() { BOOK_ID = id };
+                AddBookBorrowerRequest _Request = new AddBookBorrowerRequest() { BOOK_ID = id.ToString() };
                 _Response = await BBService.GetAddBookBorrower(_Request);
             }
             catch
             {
-                var msgs = new List<MessageListItem>() { new MessageListItem() { MESSAGE = "Unable to find Book." } };
-                _Response.ERROR_MESSAGES.AddRange(msgs);
+                var msgs = new MessageListItem() { MESSAGE = "Unable to find Book."  };
+                _Response.ERROR_MESSAGES.Add(msgs);
             }
 
             ViewBag.BorrowerId = await BBService.GetBorrowers();
@@ -137,6 +137,7 @@ namespace CRUDLibrary.Web.Controllers
                     try
                     {
                         AddAuthorBookRequest _Request = new AddAuthorBookRequest() { BOOK_ID = id.ToString() };
+                        _Response = await ABService.GetAddAuthorBook(_Request);
                     }
                     catch
                     {
@@ -153,7 +154,7 @@ namespace CRUDLibrary.Web.Controllers
             DeleteAuthorBookResponse _Response = new();
             try
             {
-                DeleteAuthorBookRequest _Request = new DeleteAuthorBookRequest() { AUTHOR_ID = AuthorId, BOOK_ID = Id };
+                DeleteAuthorBookRequest _Request = new DeleteAuthorBookRequest() { AUTHOR_ID = AuthorId.ToString(), BOOK_ID = Id.ToString() };
                 _Response = await ABService.GetDeleteAuthorBook(_Request);
             }
             catch
@@ -268,22 +269,25 @@ namespace CRUDLibrary.Web.Controllers
         }
         //------------------------------------
         [HttpPost]
-        public async Task<IActionResult> AddAuthor([FromBody] AddAuthorBookSubmitRequest _Request)
+        public async Task<JsonResult> AddAuthor([FromBody] AddAuthorBookSubmitRequest _Request)
         {
             AddAuthorBookSubmitResponse _Response = new();
+            MessageListItem msgs = new();
+            
             try
             {
                 _Response = await ABService.SubmitAddAuthorBook(_Request);
-                var msgs = new List<MessageListItem>() { new MessageListItem() { MESSAGE = "Successfully added and Author to this Book." } };
-                _Response.SUCCESS_MESSAGES.AddRange(msgs); 
+                msgs.MESSAGE = "Successfully added an Author to this Book.";
+                _Response.SUCCESS_MESSAGES.Add(msgs); 
             }
-            catch
+            catch(Exception ex)
             { 
-                var msgs = new List<MessageListItem>() { new MessageListItem() { MESSAGE = "Unable to add an Author to this Book." } }; 
-                _Response.ERROR_MESSAGES.AddRange(msgs);
+                Console.WriteLine(ex);
+                msgs.MESSAGE = "Unable to add an Author to this Book." ; 
+                _Response.ERROR_MESSAGES.Add(msgs);
             }
                     
-            return RedirectToAction("View", _Response);
+            return Json(_Response);
         }
         //-------------------------------------
         [HttpPost, ActionName("DeleteAuthor")]

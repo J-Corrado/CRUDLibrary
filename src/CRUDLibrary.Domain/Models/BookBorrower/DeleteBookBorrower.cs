@@ -8,7 +8,7 @@ namespace CRUDLibrary.Domain.Models
 {
     public class DeleteBookBorrowerRequest : RequestModel
     {
-        public int BOOK_BORROWER_ID { get; set; }
+        public string BOOK_BORROWER_ID { get; set; } = string.Empty;
         public int BOOK_ID { get; set; }
         public int BORROWER_ID { get; set; }
     }
@@ -26,14 +26,12 @@ namespace CRUDLibrary.Domain.Models
 
     public class DeleteBookBorrowerSubmitRequest : RequestModel
     {
-        public int BOOK_BORROWER_ID { get; set; }
-        public int BOOK_ID { get; set; }
-        public int BORROWER_ID { get; set; }
+        public string BOOK_BORROWER_ID { get; set; } = string.Empty;
     }
 
     public class DeleteBookBorrowerSubmitResponse : ResponseModel
     {
-        public bool Successful { get; set; }
-        public string Message { get; set; }
+        public int BOOK_ID { get; set; }
+        public int BORROWER_ID { get; set; }
     }
 }

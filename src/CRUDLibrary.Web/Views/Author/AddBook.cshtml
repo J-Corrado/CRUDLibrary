@@ -10,13 +10,18 @@
 <h4>Authored Book</h4>
 <hr />
 <form id="AddAuthorBookForm">
-<div class="row">
-    <div class="col-md-4">
-        <h5>Author</h5>
-        <h6>@Model.AUTHOR_NAME</h6>
-        
+    <div id="ErrorMessages" class="alert-message-div">
+        </div>
+        <div id="SuccessMessages" class="alert-message-div alert-success">
+        </div>
+    <p>
+    <div class="row">
+        <div class="col-md-4">
+            <h5>Author</h5>
+            <h6>@Model.AUTHOR_NAME</h6>
+
             <div validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="AUTHOR_ID" />
+            <input type="hidden" asp-for="AUTHOR_ID"/>
 
             <div class="form-group">
                 <label asp-for="BOOK_ID">Book</label>
@@ -27,11 +32,11 @@
             </div>
             <div class="form-group">
                 <label for="BOOK_TITLE" class="control-label">Or enter a new book name</label>
-                <input asp-for="BOOK_TITLE" id="BOOK_TITLE" name="BOOK_TITLE" type="text" class="form-control" />
+                <input asp-for="BOOK_TITLE" id="BOOK_TITLE" name="BOOK_TITLE" type="text" class="form-control"/>
                 <span asp-validation-for="BOOK_TITLE" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label for="BOOK_GENRE" >Genre</label>
+                <label for="BOOK_GENRE">Genre</label>
                 <select asp-for="BOOK_GENRE" id="BOOK_GENRE" name="BOOK_GENRE" asp-items="@(new SelectList(Model.GENRES, "ID", "NAME"))" class="form-control">
                     <option value=""></option>
                 </select>
@@ -39,15 +44,15 @@
             </div>
             <div class="form-group">
                 <label for="BOOK_PUB_DATE" class="control-label">Publication Date</label>
-                <input asp-for="BOOK_PUB_DATE" id="BOOK_PUB_DATE" type="date" class="form-control" />
+                <input asp-for="BOOK_PUB_DATE" id="BOOK_PUB_DATE" type="date" class="form-control"/>
                 <span validation-for="BOOK_PUB_DATE" class="text-danger"></span>
             </div>
-            <br />
+            <br/>
             <div class="form-group">
-                <button type="button" id="SubmitAuthorBook" class="btn btn-primary" >Add</button>
+                <button type="button" id="SubmitAuthorBook" class="btn btn-primary">Add</button>
             </div>
+        </div>
     </div>
-</div>
 </form>
 <div>
     <a asp-action="Index">Back to List</a>
@@ -74,7 +79,7 @@
                 if(resp.ERROR_MESSAGES.length == 0)
                 {
                     sessionStorage.setItem("MESSAGE", JSON.stringify(resp.SUCCESS_MESSAGES));
-                    window.location.href = RootURL() + 'Author/View/' + resp.ID.toString();
+                    window.location.href = RootURL() + 'Author/View/' + resp.AUTHOR_ID.toString();
                 } 
                 else 
                 {

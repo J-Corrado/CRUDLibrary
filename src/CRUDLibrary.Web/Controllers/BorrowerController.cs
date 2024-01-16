@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
-namespace _13_LibraryCRUD.Controllers
+namespace CRUDLibrary.Web.Controllers
 {
-    public class BorrowersController : Controller
+    public class BorrowerController : Controller
     {
         #region Services
 
@@ -19,7 +19,7 @@ namespace _13_LibraryCRUD.Controllers
 
         #region Constructor
 
-        public BorrowersController(IConfiguration configuration, ILogger logger, IBorrower borrowerService,
+        public BorrowerController(IConfiguration configuration, IBorrower borrowerService,
             IBookBorrower bBService)
         {
             BorrowerService = borrowerService;
@@ -87,18 +87,17 @@ namespace _13_LibraryCRUD.Controllers
 
             try
             {
-                AddBookBorrowerRequest _Request = new AddBookBorrowerRequest() { BORROWER_ID = id };
+                AddBookBorrowerRequest _Request = new AddBookBorrowerRequest() { BORROWER_ID = id.ToString() };
                 _Response = await BBService.GetAddBookBorrower(_Request);
             }
             catch
             {
-                var msgs = new List<MessageListItem>()
-                    { new MessageListItem() { MESSAGE = "Unable to find Book or Borrower" } };
-                _Response.ERROR_MESSAGES.AddRange(msgs);
+                var msgs = new MessageListItem() { MESSAGE = "Unable to find Book or Borrower"  };
+                _Response.ERROR_MESSAGES.Add(msgs);
             }
 
-            ViewBag.BookId = new SelectList(await BBService.GetBooks(), "BookId", "Title");
-            ViewBag.Genre = new SelectList(Enum.GetValues(typeof(BookGenre)));
+            ViewBag.BookId = await BBService.GetBooks();
+            ViewBag.Genre = await BBService.GetGenres();
             return View(_Response);
         }
         //------------------------------------
@@ -113,9 +112,8 @@ namespace _13_LibraryCRUD.Controllers
             }
             catch
             {
-                var msgs = new List<MessageListItem>()
-                    { new MessageListItem() { MESSAGE = "Unable to find Borrower." } };
-                _Response.ERROR_MESSAGES.AddRange(msgs);
+                var msgs = new MessageListItem() { MESSAGE = "Unable to find Borrower."  };
+                _Response.ERROR_MESSAGES.Add(msgs);
             }
 
             return View(_Response);
@@ -157,7 +155,7 @@ namespace _13_LibraryCRUD.Controllers
                 _Response.ERROR_MESSAGES.AddRange(msgs);
             }
 
-            return RedirectToAction("Index", _Response);
+            return View(_Response);
         }
         //------------------------------------
 
@@ -167,23 +165,20 @@ namespace _13_LibraryCRUD.Controllers
 
         //------------------------------------
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Add([FromBody] AddBorrowerSubmitRequest _Request)
+        public async Task<JsonResult> Add([FromBody] AddBorrowerSubmitRequest _Request)
         {
             AddBorrowerSubmitResponse _Response = new();
-
+            MessageListItem msgs = new();
             try
             {
                 _Response = await BorrowerService.SubmitAddBorrower(_Request);
-                var msgs = new List<MessageListItem>()
-                    { new MessageListItem() { MESSAGE = "Successfully added Borrower." } };
-                _Response.SUCCESS_MESSAGES.AddRange(msgs);
+                msgs.MESSAGE = "Successfully added Borrower.";
+                _Response.SUCCESS_MESSAGES.Add(msgs);
             }
             catch
             {
-                var msgs = new List<MessageListItem>()
-                    { new MessageListItem() { MESSAGE = "Error when attempting to add Borrower." } };
-                _Response.ERROR_MESSAGES.AddRange(msgs);
+                msgs.MESSAGE = "Error when attempting to add Borrower.";
+                _Response.ERROR_MESSAGES.Add(msgs);
             }
 
             return Json(_Response);
@@ -191,81 +186,73 @@ namespace _13_LibraryCRUD.Controllers
 
         //------------------------------------
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddBorrow([FromBody] AddBookBorrowerSubmitRequest _Request)
+        public async Task<JsonResult> AddBorrow([FromBody] AddBookBorrowerSubmitRequest _Request)
         {
             AddBookBorrowerSubmitResponse _Response = new();
-
+            MessageListItem msgs = new();
+            
             try
             {
                 _Response = await BBService.SubmitAddBookBorrower(_Request);
-                var msgs = new List<MessageListItem>()
-                    { new MessageListItem() { MESSAGE = "Successfully added Book to Borrower." } };
-                _Response.SUCCESS_MESSAGES.AddRange(msgs);
+                msgs.MESSAGE = "Successfully added Book to Borrower.";
+                _Response.SUCCESS_MESSAGES.Add(msgs);
             }
             catch
             {
-                var msgs = new List<MessageListItem>()
-                    { new MessageListItem() { MESSAGE = "Error when attempting to add Book to Borrower." } };
-                _Response.ERROR_MESSAGES.AddRange(msgs);
-            }
-
-            return RedirectToAction("View", _Response);
-        }
-
-        //------------------------------------
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Update([FromBody] UpdateBorrowerSubmitRequest _Request)
-        {
-            UpdateBorrowerSubmitResponse _Response = new();
-
-            try
-            {
-                _Response = await BorrowerService.SubmitUpdateBorrower(_Request);
-                var msgs = new List<MessageListItem>()
-                    { new MessageListItem() { MESSAGE = "Successfully updated Borrower." } };
-                _Response.SUCCESS_MESSAGES.AddRange(msgs);
-                return RedirectToAction("View", _Response);
-            }
-            catch
-            {
-                var msgs = new List<MessageListItem>()
-                    { new MessageListItem() { MESSAGE = "Error when attempting to update Borrower." } };
-                _Response.ERROR_MESSAGES.AddRange(msgs);
+                msgs.MESSAGE = "Error when attempting to add Book to Borrower." ;
+                _Response.ERROR_MESSAGES.Add(msgs);
             }
 
             return Json(_Response);
         }
 
         //------------------------------------
-        [HttpPost, ActionName("ReturnBorrow")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ReturnBorrowConfirm([FromBody] UpdateBookBorrowerSubmitRequest _Request)
+        [HttpPost]
+        public async Task<JsonResult> Update([FromBody] UpdateBorrowerSubmitRequest _Request)
         {
-            UpdateBookBorrowerSubmitResponse _Response = new();
-
+            UpdateBorrowerSubmitResponse _Response = new();
+            MessageListItem msgs = new();
+            
             try
             {
-                _Response = await BBService.SubmitUpdateBookBorrower(_Request);
-                var msgs = new List<MessageListItem>()
-                    { new MessageListItem() { MESSAGE = "Successfully returned borrowed Book." } };
-                _Response.SUCCESS_MESSAGES.AddRange(msgs);
+                _Response = await BorrowerService.SubmitUpdateBorrower(_Request);
+                msgs.MESSAGE = "Successfully updated Borrower." ;
+                _Response.SUCCESS_MESSAGES.Add(msgs);
             }
             catch
             {
-                var msgs = new List<MessageListItem>()
-                    { new MessageListItem() { MESSAGE = "Error while attempting to return borrowed Book." } };
-                _Response.ERROR_MESSAGES.AddRange(msgs);
+                msgs.MESSAGE = "Error when attempting to update Borrower.";
+                _Response.ERROR_MESSAGES.Add(msgs);
             }
 
-            return RedirectToAction("View", _Response);
+            return Json(_Response);
         }
 
         //------------------------------------
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed([FromBody] DeleteBorrowerSubmitRequest _Request)
+        [HttpPost]
+        public async Task<JsonResult> ReturnBorrow([FromBody] UpdateBookBorrowerSubmitRequest _Request)
+        {
+            UpdateBookBorrowerSubmitResponse _Response = new();
+
+            MessageListItem msgs = new();
+            try
+            {
+                _Response = await BBService.SubmitUpdateBookBorrower(_Request);
+                msgs.MESSAGE = "Successfully returned borrowed Book.";
+                _Response.SUCCESS_MESSAGES.Add(msgs);
+            }
+            catch
+            {
+                msgs.MESSAGE = "Error while attempting to return borrowed Book.";
+                _Response.ERROR_MESSAGES.Add(msgs);
+            }
+
+            return Json(_Response);
+        }
+
+        //------------------------------------
+        [HttpPost]
+        public async Task<JsonResult> Delete([FromBody] DeleteBorrowerSubmitRequest _Request)
         {
             DeleteBorrowerSubmitResponse _Response = new();
             try
@@ -282,7 +269,7 @@ namespace _13_LibraryCRUD.Controllers
                 _Response.ERROR_MESSAGES.AddRange(msgs);
             }
 
-            return RedirectToAction("Index", _Response);
+            return Json( _Response);
         }
 
         //------------------------------------

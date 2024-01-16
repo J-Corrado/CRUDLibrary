@@ -36,25 +36,6 @@ namespace CRUDLibrary.Domain.Services
             if (_Response.ERROR_MESSAGES.Count == 0)
             {
                 _Response = await _DAL.InsertAddAuthor(_Request);
-                /* if (_Request.BOOK_ID != null)
-                {
-                    await _DAL.InsertAddAuthorBook(new AddAuthorBookSubmitRequest()
-                        { AUTHOR_ID = (int)_Request.AUTHOR_ID, BOOK_ID = (int)_Request.BOOK_ID });
-                }
-                else if (!string.IsNullOrEmpty(_Request.BOOK_TITLE))
-                {
-                    var book = await _DAL.InsertAddBook(new AddBookSubmitRequest()
-                    {
-                        BOOK_TITLE = _Request.BOOK_TITLE, 
-                        BOOK_GENRE = (Data.LIB_DB.Enum.BookGenre)_Request.BOOK_GENRE, 
-                        BOOK_PUB_DATE = (DateTime)_Request.BOOK_PUB_DATE
-                    });
-                    await _DAL.InsertAddAuthorBook(new AddAuthorBookSubmitRequest()
-                    {
-                        AUTHOR_ID = (int)_Request.AUTHOR_ID, 
-                        BOOK_ID = book.ID
-                    });
-                } */
             }
             return _Response;
         }

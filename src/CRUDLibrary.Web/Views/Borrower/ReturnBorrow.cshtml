@@ -1,0 +1,73 @@
+﻿@model CRUDLibrary.Domain.Models.UpdateBookBorrowerResponse
+
+@{
+    ViewData["Title"] = "Return Book";
+}
+
+<h1>Book Return</h1>
+<div id="ErrorMessages" class="alert-message-div">
+    </div>
+    <div id="SuccessMessages" class="alert-message-div alert-success">
+    </div>
+<p>
+<h3>Are you sure you want to return this?</h3>
+<div>
+    <hr/>
+    <dl class="row">
+        <dt class="col-sm-2">
+            Title
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.BOOK_TITLE)
+        </dd>
+        <dt class="col-sm-2">
+            Borrower
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.BORROWER_NAME)
+        </dd>
+        <dt class="col-sm-2">
+            Borrowed on
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.BORROWED_DATE)
+        </dd>
+    </dl>
+
+    <form id="ReturnBorrowForm">
+        <input type="hidden" asp-for="BOOK_BORROWER_ID"/>
+        <button type="button" id="ReturnBorrowSubmit" class="btn btn-warning">Return</button> |
+    </form>
+    <a asp-action="View">Back to List</a>
+</div>
+<script>
+    
+    $('#ReturnBorrowSubmit').on('click',function(){
+        EnableLoader();
+        var sendD = JSON.parse($('#ReturnBorrowForm').serializeJSON());
+        $.ajax({
+            url: RootURL() + 'Borrower/ReturnBorrow/' + @Model.BORROWER_ID + '?BookId='+ @Model.BOOK_ID,
+            type: 'POST',
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            cache: false,
+            data: JSON.stringify(sendD),
+            success: function (resp) {
+                if(resp.ERROR_MESSAGES.length == 0)
+                {
+                    sessionStorage.setItem("MESSAGE", JSON.stringify(resp.SUCCESS_MESSAGES));
+                    window.location.href = RootURL() + 'Borrower/View/' + resp.BORROWER_ID.toString();
+                } 
+                else 
+                {
+                    DisableLoader();
+                    $('#ErrorMessages').AddMessages(resp.ERROR_MESSAGES);
+                }
+            },
+            error: function (r) 
+            {
+                DisableLoader();
+            }
+        });
+      });
+</script>

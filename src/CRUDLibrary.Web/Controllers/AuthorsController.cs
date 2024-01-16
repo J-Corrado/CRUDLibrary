@@ -92,11 +92,10 @@ namespace CRUDLibrary.Web.Controllers
             {
                 AddAuthorBookRequest _Request = new AddAuthorBookRequest(){AUTHOR_ID = id.ToString()};
                 _Response = await ABService.GetAddAuthorBook(_Request);
-                var msgs = new MessageListItem() { MESSAGE = "Successfully added Book to Author."};
-                _Response.SUCCESS_MESSAGES.Add(msgs);
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex);
                 var msgs = new MessageListItem(){ MESSAGE = "Error adding Book to Author" };
                 _Response.ERROR_MESSAGES.Add(msgs);
             }
@@ -111,8 +110,8 @@ namespace CRUDLibrary.Web.Controllers
         {
             var authoredBook = await ABService.GetDeleteAuthorBook(new DeleteAuthorBookRequest()
             {
-                AUTHOR_ID = Id, 
-                BOOK_ID = BookId
+                AUTHOR_ID = Id.ToString(), 
+                BOOK_ID = BookId.ToString()
             });
             
             return View(authoredBook);

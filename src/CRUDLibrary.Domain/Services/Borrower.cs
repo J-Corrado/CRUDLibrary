@@ -35,7 +35,7 @@ namespace CRUDLibrary.Domain.Services
         {
             AddBorrowerSubmitResponse _Response = new();
             
-            _validate.SubmitAddBorrower(_Request);
+            //_validate.SubmitAddBorrower(_Request);
             
             if (_Response.ERROR_MESSAGES.Count == 0)
             {
@@ -91,7 +91,9 @@ namespace CRUDLibrary.Domain.Services
                             BOOK_ID = bb.BOOK_ID,
                             BOOK_TITLE = bb.BOOK_TITLE,
                             BOOK_GENRE = bb.BOOK_GENRE,
-                            BOOK_PUB_DATE = bb.BOOK_PUB_DATE
+                            BOOK_PUB_DATE = bb.BOOK_PUB_DATE,
+                            BORROWED_DATE = bb.BORROWED_DATE,
+                            RETURNED_DATE = bb.RETURNED_DATE ?? string.Empty
                         }).ToList();
                     }
                 }

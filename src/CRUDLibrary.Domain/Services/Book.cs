@@ -128,7 +128,8 @@ namespace CRUDLibrary.Domain.Services
                                             {
                                                 ID = bb.ID,
                                                 BORROWER_ID = bb.BORROWER_ID,
-                                                BORROWER_NAME = bb.BORROWER_NAME
+                                                BORROWER_NAME = bb.BORROWER_NAME,
+                                                BORROWED_DATE = bb.BORROWED_DATE
                                             }).ToList();
                     }
                 }
