@@ -5,10 +5,6 @@
 }
 
 <h1>Authors</h1>
-<div id="ErrorMessages" class="alert-message-div">
-    </div>
-    <div id="SuccessMessages" class="alert-message-div alert-success">
-    </div>
 <p>
     <a class="btn btn-success" asp-action="Add">Add New</a>
 </p>
@@ -40,7 +36,7 @@
                 @Html.DisplayFor(modelItem => item.DIED)
             </td>
             <td>
-                <a class="btn btn-sm btn-warning" asp-action="Update" asp-route-id="@item.ID">Update</a> |
+                <a class="btn btn-sm btn-warning" asp-action="Update" asp-route-id="@item.ID">Edit</a> |
                 <a class="btn btn-sm btn-primary" asp-action="View" asp-route-id="@item.ID">Details</a> |
                 <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.ID">Delete</a>
             </td>

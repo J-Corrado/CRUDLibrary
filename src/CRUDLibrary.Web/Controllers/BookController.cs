@@ -154,7 +154,7 @@ namespace CRUDLibrary.Web.Controllers
             DeleteAuthorBookResponse _Response = new();
             try
             {
-                DeleteAuthorBookRequest _Request = new DeleteAuthorBookRequest() { AUTHOR_ID = AuthorId.ToString(), BOOK_ID = Id.ToString() };
+                DeleteAuthorBookRequest _Request = new DeleteAuthorBookRequest() { AUTHOR_ID = AuthorId, BOOK_ID = Id };
                 _Response = await ABService.GetDeleteAuthorBook(_Request);
             }
             catch
@@ -211,61 +211,66 @@ namespace CRUDLibrary.Web.Controllers
         }
         //------------------------------------
         [HttpPost]
-        public async Task<IActionResult> Update([FromBody] UpdateBookSubmitRequest _Request)
+        public async Task<JsonResult> Update([FromBody] UpdateBookSubmitRequest _Request)
         {
             UpdateBookSubmitResponse _Response = new();
-
+            MessageListItem msgs = new();
+            
+            
             try
             {
                 _Response = await BookService.SubmitUpdateBook(_Request);
-                var msgs = new List<MessageListItem>() { new MessageListItem() { MESSAGE = "Successfully updated Book." } };
-                _Response.SUCCESS_MESSAGES.AddRange(msgs);
+                msgs.MESSAGE = "Successfully updated Book.";
+                _Response.SUCCESS_MESSAGES.Add(msgs);
             }
             catch
             {
-                var msgs = new List<MessageListItem>() { new MessageListItem(){ MESSAGE = "Error updating Book." }};
-                _Response.ERROR_MESSAGES.AddRange(msgs);
+                msgs.MESSAGE = "Error updating Book.";
+                _Response.ERROR_MESSAGES.Add(msgs);
             }
             
-            return RedirectToAction("View", _Response);
+            return Json(_Response);
         }
         //------------------------------------
         [HttpPost]
-        public async Task<IActionResult> AddBorrow([FromBody] AddBookBorrowerSubmitRequest _Request)
+        public async Task<JsonResult> AddBorrow([FromBody] AddBookBorrowerSubmitRequest _Request)
         {
             AddBookBorrowerSubmitResponse _Response = new();
+            MessageListItem msgs = new();
 
             try 
             {
                 _Response = await BBService.SubmitAddBookBorrower(_Request);
-                var msgs = new List<MessageListItem>() { new MessageListItem() { MESSAGE = "Successfully added Borrower to Book." } };
-                _Response.SUCCESS_MESSAGES.AddRange(msgs);
+                msgs.MESSAGE = "Successfully added Borrower to Book.";
+                _Response.SUCCESS_MESSAGES.Add(msgs);
             }
-            catch
+            catch(Exception ex)
             {
-                var msgs = new List<MessageListItem>() { new MessageListItem(){ MESSAGE = "Error adding Borrower to Book." }};
-                _Response.ERROR_MESSAGES.AddRange(msgs);
+                Console.WriteLine(ex);
+                msgs.MESSAGE = "Error adding Borrower to Book.";
+                _Response.ERROR_MESSAGES.Add(msgs);
             }
-            return RedirectToAction("View", _Response);
+            return Json(_Response);
         }
         //------------------------------------
-        [HttpPost, ActionName("ReturnBorrow")]
-        public async Task<IActionResult> ReturnBorrowConfirmed([FromBody] UpdateBookBorrowerSubmitRequest _Request)
+        [HttpPost]
+        public async Task<JsonResult> ReturnBorrow([FromBody] UpdateBookBorrowerSubmitRequest _Request)
         {
             UpdateBookBorrowerSubmitResponse _Response = new();
-        
+            MessageListItem msgs = new();
+            
             try
             {
                 _Response = await BBService.SubmitUpdateBookBorrower(_Request);
-                var msgs = new List<MessageListItem>() { new MessageListItem() { MESSAGE = "Successfully returned Book." } };
-                _Response.SUCCESS_MESSAGES.AddRange(msgs); 
+                msgs.MESSAGE = "Successfully returned Book.";
+                _Response.SUCCESS_MESSAGES.Add(msgs); 
             }
             catch (Exception ex) 
             { 
-                var msgs = new List<MessageListItem>() { new MessageListItem() { MESSAGE = "Unable to return Book." } }; 
-                _Response.ERROR_MESSAGES.AddRange(msgs);
+                msgs.MESSAGE = "Unable to return Book."; 
+                _Response.ERROR_MESSAGES.Add(msgs);
             }
-            return RedirectToAction("View", _Response);
+            return Json(_Response);
         }
         //------------------------------------
         [HttpPost]
@@ -290,27 +295,28 @@ namespace CRUDLibrary.Web.Controllers
             return Json(_Response);
         }
         //-------------------------------------
-        [HttpPost, ActionName("DeleteAuthor")]
-        public async Task<IActionResult> DeleteAuthorConfirmed([FromBody] DeleteAuthorBookSubmitRequest _Request)
+        [HttpPost]
+        public async Task<JsonResult> DeleteAuthor([FromBody] DeleteAuthorBookSubmitRequest _Request)
         {
             DeleteAuthorBookSubmitResponse _Response = new();
+            MessageListItem msgs = new();
             try
             {
                 _Response = await ABService.SubmitDeleteAuthorBook(_Request);
-                var msgs = new List<MessageListItem> { new MessageListItem() { MESSAGE = "Successfully deleted Author from Book." } };
-                _Response.SUCCESS_MESSAGES.AddRange(msgs);
+                msgs.MESSAGE = "Successfully deleted Author from Book.";
+                _Response.SUCCESS_MESSAGES.Add(msgs);
             }
             catch
             {
-                var msgs = new List<MessageListItem> { new MessageListItem() { MESSAGE = "Unable to delete Author from Book." } };
-                _Response.ERROR_MESSAGES.AddRange(msgs);
+                msgs.MESSAGE = "Unable to delete Author from Book.";
+                _Response.ERROR_MESSAGES.Add(msgs);
             }
                     
-            return RedirectToAction("View", _Response);
+            return Json(_Response);
         }
         //------------------------------------
-        [HttpPost, ActionName("Delete")]
-        public async Task<JsonResult> DeleteConfirmed([FromBody] DeleteBookSubmitRequest _Request)
+        [HttpPost]
+        public async Task<JsonResult> Delete([FromBody] DeleteBookSubmitRequest _Request)
         {
             DeleteBookSubmitResponse _Response = new();
             MessageListItem msgs = new();

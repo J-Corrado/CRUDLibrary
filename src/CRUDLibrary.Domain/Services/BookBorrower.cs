@@ -77,8 +77,6 @@ public class BookBorrower : IBookBorrower
                 _Response = await _DAL.InsertAddBookBorrower(_Request);
             }
 
-            _Response.BOOK_ID = int.Parse(_Request.BOOK_ID);
-            _Response.BORROWER_ID = int.Parse(_Request.BORROWER_ID);
             return _Response;
         }
     //------------------------------------

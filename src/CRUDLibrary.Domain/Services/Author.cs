@@ -31,12 +31,14 @@ namespace CRUDLibrary.Domain.Services
         public async Task<AddAuthorSubmitResponse> SubmitAddAuthor(AddAuthorSubmitRequest _Request)
         {
             AddAuthorSubmitResponse _Response = new();
-            //_validate.SubmitAddAuthor(_Request);
+            
+            _Response.ERROR_MESSAGES.AddRange(await _validate.SubmitAddAuthor(_Request));
 
             if (_Response.ERROR_MESSAGES.Count == 0)
             {
                 _Response = await _DAL.InsertAddAuthor(_Request);
             }
+            
             return _Response;
         }
         //------------------------------------
@@ -70,7 +72,7 @@ namespace CRUDLibrary.Domain.Services
         {
             UpdateAuthorSubmitResponse _Response = new();
 
-            //_validate.SubmitUpdateAuthor(ref _Request, ref _Response);
+            _Response.ERROR_MESSAGES.AddRange(await _validate.SubmitUpdateAuthor(_Request));
 
             if (_Response.ERROR_MESSAGES.Count == 0)
             {
@@ -98,7 +100,7 @@ namespace CRUDLibrary.Domain.Services
             if (_Response.ERROR_MESSAGES.Count == 0)
             {
                 var author = await _DAL.GetAuthorById(_Request.AUTHOR_ID);
-                if (author != null)
+                if (author.Name != null)
                 {
                     _Response = await _DAL.QueryGetViewAuthor(_Request);
                     if (_Response.ERROR_MESSAGES.Count() == 0)

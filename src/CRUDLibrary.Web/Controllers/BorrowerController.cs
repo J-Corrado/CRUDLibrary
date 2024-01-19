@@ -56,6 +56,7 @@ namespace CRUDLibrary.Web.Controllers
                 var msgs = new List<MessageListItem>()
                     { new MessageListItem() { MESSAGE = "Unable to find Borrower." } };
                 _Response.ERROR_MESSAGES.AddRange(msgs);
+                return RedirectToAction("Index", _Response);
             }
 
             return View(_Response);

@@ -24,10 +24,40 @@
         </dd>
     </dl>
 
-    <form asp-action="DeleteAuthor">
-        <input type="hidden" asp-for="AUTHOR_ID" />
-        <input type="hidden" asp-for="BOOK_ID" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
+    <form id="DeleteAuthorBookForm">
+        <input type="hidden" asp-for="AUTHOR_BOOK_ID" />
+        <button type="button" id="DeleteAuthorBookSubmit" class="btn btn-danger">Delete</button> |
         <a asp-action="Index">Back to List</a>
     </form>
 </div>
+<script>
+    
+    $('#DeleteAuthorBookSubmit').on('click',function(){
+        EnableLoader();
+        var sendD = JSON.parse($('#DeleteAuthorBookForm').serializeJSON());
+        $.ajax({
+            url: RootURL() + 'Book/DeleteAuthor/' + @Model.BOOK_ID + '?AuthorId=' + @Model.AUTHOR_ID,
+            type: 'POST',
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            cache: false,
+            data: JSON.stringify(sendD),
+            success: function (resp) {
+                if(resp.ERROR_MESSAGES.length == 0)
+                {
+                    sessionStorage.setItem("MESSAGE", JSON.stringify(resp.SUCCESS_MESSAGES));
+                    window.location.href = RootURL() + 'Book/View/' + resp.BOOK_ID.toString();
+                } 
+                else 
+                {
+                    DisableLoader();
+                    $('#ErrorMessages').AddMessages(resp.ERROR_MESSAGES);
+                }
+            },
+            error: function (r) 
+            {
+                DisableLoader();
+            }
+        });
+      });
+</script>

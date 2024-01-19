@@ -15,7 +15,7 @@ public class Validation : IValidation
 
         public static ValidationResult NAME(string _name)
         {
-            Regex rgx = new Regex(@"^[a-zA-Z0-9]*$");
+            Regex rgx = new Regex(@"^[a-zA-Z0-9\s]*$");
 
             if (rgx.IsMatch(_name))
                 return ValidationResult.Success;
@@ -24,7 +24,7 @@ public class Validation : IValidation
         }
         public static ValidationResult TITLE(string _title)
         {
-            Regex rgx = new Regex(@"^[a-zA-Z0-9]*$");
+            Regex rgx = new Regex(@"^[\w\s\p{P}]*$");
 
             if (rgx.IsMatch(_title))
                 return ValidationResult.Success;
@@ -40,33 +40,26 @@ public class Validation : IValidation
             else
                 return new ValidationResult("");
         }
+
+        public static ValidationResult GENRE(string _genre)
+        {
+            Regex rgx = new Regex(@"^[a-zA-Z0-9]*$");
+            if (rgx.IsMatch(_genre))
+                return ValidationResult.Success;
+            else
+                return new ValidationResult("");
+        }
+        
         public static ValidationResult VAL_DATE(string _date)
         {
-            Regex rgx = new Regex(@"^\d{1,2}\/\d{1,2}\/\d{4}$");
+            Regex rgx = new Regex(@"^\d{4}\/\d{1,2}\/\d{1,2}$");
 
-            if (rgx.IsMatch(_date) | _date.Trim() == "")
+            if (string.IsNullOrWhiteSpace(_date) || DateOnly.TryParse(_date, out _))
                 return ValidationResult.Success;
             else
                 return new ValidationResult("");
         }
-        public static ValidationResult DROP_DOWN(string _drop_down)
-        {
-            // Dim rgx As New Regex("^\d{2}\/\d{2}\/\d{4}$")
-
-            if (_drop_down.Trim() != "")
-                return ValidationResult.Success;
-            else
-                return new ValidationResult("");
-        }
-        public static ValidationResult DROP_DOWN_REQ(string _drop_down)
-        {
-            // Dim rgx As New Regex("^\d{2}\/\d{2}\/\d{4}$")
-
-            if (_drop_down.Trim() != "")
-                return ValidationResult.Success;
-            else
-                return new ValidationResult("");
-        }
+        
         public List<MessageListItem> ValidateObject(object Obj, string validateId = "")
         {
             ValidationContext context = new ValidationContext(Obj);
@@ -76,22 +69,26 @@ public class Validation : IValidation
             Validator.TryValidateObject(Obj, context, results, true);
 
             foreach (var i in results)
-                messageList.Add(new MessageListItem() { MESSAGE = i.ErrorMessage + validateId, CDE = "VALIDATION" });
+                messageList.Add(new MessageListItem() { MESSAGE = i.ErrorMessage + validateId });
             return messageList;
         }
 
         public async Task<List<MessageListItem>> SubmitAddAuthor(AddAuthorSubmitRequest _req)
         {
             List<MessageListItem> _rtn = new();
-
+            
             _rtn.AddRange(ValidateObject(_req));
             _rtn.AddRange(await _DAL.ValidateInsertAuthor(_req));
 
             return _rtn;
-        }
-        public void SubmitUpdateAuthor(ref UpdateAuthorSubmitRequest _req, ref UpdateAuthorSubmitResponse _resp)
+        }public async Task<List<MessageListItem>> SubmitUpdateAuthor(UpdateAuthorSubmitRequest _req)
         {
-            _resp.ERROR_MESSAGES.AddRange(ValidateObject(_req));
+            List<MessageListItem> _rtn = new();
+            
+            _rtn.AddRange(ValidateObject(_req));
+            _rtn.AddRange(await _DAL.ValidateUpdateAuthor(_req));
+
+            return _rtn;
         }
 
         public async Task<List<MessageListItem>> SubmitAddBook(AddBookSubmitRequest _req)
@@ -104,9 +101,14 @@ public class Validation : IValidation
             return _rtn;
         }
 
-        public void SubmitUpdateBook(ref UpdateBookSubmitRequest _req, ref UpdateBookSubmitResponse _resp)
+        public async Task<List<MessageListItem>> SubmitUpdateBook(UpdateBookSubmitRequest _req)
         {
-            _resp.ERROR_MESSAGES.AddRange(ValidateObject(_req));
+            List<MessageListItem> _rtn = new();
+            _rtn.AddRange(ValidateObject(_req));
+            _rtn.AddRange(await _DAL.ValidateUpdateBook(_req));
+
+
+            return _rtn;
         }
 
         public async Task<List<MessageListItem>> SubmitAddBorrower(AddBorrowerSubmitRequest _req)
@@ -117,8 +119,12 @@ public class Validation : IValidation
             return _rtn;
         }
 
-        public void SubmitUpdateBorrower(ref UpdateBorrowerSubmitRequest _req, ref UpdateBorrowerSubmitResponse _resp)
+        public async Task<List<MessageListItem>> SubmitUpdateBorrower( UpdateBorrowerSubmitRequest _req)
         {
-            _resp.ERROR_MESSAGES.AddRange(ValidateObject(_req));
+            List<MessageListItem> _rtn = new();
+            _rtn.AddRange(ValidateObject(_req));
+            _rtn.AddRange(await _DAL.ValidateUpdateBorrower(_req));
+
+            return _rtn;
         }
 }

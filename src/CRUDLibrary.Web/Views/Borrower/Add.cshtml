@@ -8,19 +8,20 @@
 <h4>Borrower</h4>
 <hr />
 <form id="AddBorrowerForm">
-<div class="row">
-    <div class="col-md-4">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="row">
+        <div class="col-md-4">
+            <div id="ErrorMessages" class="alert-message-div"></div>
+            <div validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="BORROWER_NAME" class="control-label"></label>
-                <input asp-for="BORROWER_NAME" class="form-control" />
+                <label asp-for="BORROWER_NAME" class="control-label">Borrower Name</label>
+                <input asp-for="BORROWER_NAME" class="form-control"/>
                 <span asp-validation-for="BORROWER_NAME" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <button type="button" id="AddBorrowerSubmit" class="btn btn-primary" >Add</button>
+                <button type="button" id="AddBorrowerSubmit" class="btn btn-primary">Add</button>
             </div>
+        </div>
     </div>
-</div>
 </form>
 <div>
     <a asp-action="Index">Back to List</a>

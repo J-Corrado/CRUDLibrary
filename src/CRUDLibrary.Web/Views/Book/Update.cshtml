@@ -2,50 +2,54 @@
 @model CRUDLibrary.Domain.Models.UpdateBookResponse
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Update";
 }
 
 <h1>Edit</h1>
 
 <h4>Book</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Update">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="BOOK_ID" />
+<form id="UpdateBookForm">
+    
+    <div class="row">
+        <div class="col-md-4">
+        <div id="ErrorMessages" class="alert-message-div">
+                                    @if(Model.ERROR_MESSAGES.Count() > 0){ 
+                                        @Html.Raw(Model.DisplayErrorMessages());
+                                    }
+                                </div>
+
+            <div validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="BOOK_ID"/>
             <div class="form-group">
-                <label asp-for="BOOK_TITLE" class="control-label"></label>
-                <input asp-for="BOOK_TITLE" class="form-control" />
-                <span asp-validation-for="BOOK_TITLE" class="text-danger"></span>
+                <label for="BOOK_TITLE" class="control-label">Title</label>
+                <input asp-for="BOOK_TITLE" id="BOOK_TITLE" name="BOOK_TITLE" type="text" class="form-control"/>
+                <span validation-for="BOOK_TITLE" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="BOOK_GENRE" class="control-label"></label>
-                <select asp-for="BOOK_GENRE" class="form-control">
+                <label for="BOOK_GENRE" class="control-label">Genre</label>
+                <select asp-for="BOOK_GENRE" id="BOOK_GENRE" name="BOOK_GENRE" asp-items="@(new SelectList(Model.GENRES, "ID", "NAME"))" class="form-control">
                     <option value=""></option>
-                    @foreach (var genre in Model.GENRES)
-                    {
-                        <option value="@genre">@genre</option>
-                    }
                 </select>
-                <span asp-validation-for="BOOK_GENRE" class="text-danger"></span>
+                <span avalidation-for="BOOK_GENRE" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="BOOK_PUB_DATE" class="control-label"></label>
-                <input asp-for="BOOK_PUB_DATE" class="form-control" />
-                <span asp-validation-for="BOOK_PUB_DATE" class="text-danger"></span>
+                <label for="BOOK_PUB_DATE" class="control-label">Publication Date</label>
+                <input asp-for="BOOK_PUB_DATE" id="BOOK_PUB_DATE" name="BOOK_PUB_DATE" type="date" class="form-control"/>
+                <span validation-for="BOOK_PUB_DATE" class="text-danger"></span>
             </div>
-            <br />
+            <br/>
             <a class="btn btn-sm btn-primary" asp-action="AddAuthor" asp-route-id="@Model.BOOK_ID">Add Author</a>
-            <br /><br />
+            <br/><br/>
             <a class="btn btn-sm btn-primary" asp-action="AddBorrow" asp-route-id="@Model.BOOK_ID">Add Borrower</a>
-            <br /><br />
+            <br/><br/>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <button type="button" id="UpdateBookSubmit" class="btn btn-primary">Save</button>
             </div>
-        </form>
+
+        </div>
     </div>
-</div>
+</form>
 
 <div>
     <a asp-action="Index">Back to List</a>
@@ -54,3 +58,34 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+<script>
+    
+    $('#UpdateBookSubmit').on('click',function(){
+        EnableLoader();
+        var sendD = JSON.parse($('#UpdateBookForm').serializeJSON());
+        $.ajax({
+            url: RootURL() + 'Book/Update/' + @Model.BOOK_ID,
+            type: 'POST',
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            cache: false,
+            data: JSON.stringify(sendD),
+            success: function (resp) {
+                if(resp.ERROR_MESSAGES.length == 0)
+                {
+                    sessionStorage.setItem("MESSAGE", JSON.stringify(resp.SUCCESS_MESSAGES));
+                    window.location.href = RootURL() + 'Book/View/' + resp.ID.toString();
+                } 
+                else 
+                {
+                    DisableLoader();
+                    $('#ErrorMessages').AddMessages(resp.ERROR_MESSAGES);
+                }
+            },
+            error: function (r) 
+            {
+                DisableLoader();
+            }
+        });
+      });
+</script>

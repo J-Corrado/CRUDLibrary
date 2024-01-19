@@ -81,14 +81,14 @@ public class AuthorBook : IAuthorBook
     public async Task<DeleteAuthorBookResponse> GetDeleteAuthorBook(DeleteAuthorBookRequest _Request)
         {
             DeleteAuthorBookResponse _Response = new();
-            var authoredBook = await _DAL.QueryDeleteAuthorBook(_Request);
             
-            if (_Response.RESP_AUTHOR_BOOK_ID != null)
+            if (_Response.ERROR_MESSAGES.Count == 0)
             {
-                _Response.AUTHOR_ID = int.Parse(_Request.AUTHOR_ID);
-                _Response.BOOK_ID = int.Parse(_Request.BOOK_ID);
-                _Response.AUTHOR_BOOK_ID = authoredBook.AUTHOR_BOOK_ID;
+               _Response = await _DAL.QueryDeleteAuthorBook(_Request);
             }
+
+            _Response.BOOK_ID = _Request.BOOK_ID;
+            _Response.AUTHOR_ID = _Request.AUTHOR_ID;
             
             return _Response;
         }

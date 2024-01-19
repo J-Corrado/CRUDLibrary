@@ -17,11 +17,12 @@ public class UpdateBorrowerResponse : ResponseModel
 
 public class UpdateBorrowerSubmitRequest : RequestModel
 {
-    [Required(ErrorMessage = "Borrower ID#Required#")]
-    [CustomValidation(typeof(Validation), "PRIMARY_ID", ErrorMessage = "Borrower ID#Invalid#")]
+    
+    [CustomValidation(typeof(Validation), "ID", ErrorMessage = "Borrower ID#Invalid#")]
     public int BORROWER_ID { get; set; }
 
 
+    [Required(ErrorMessage = "Borrower Name#Required#")]
     [CustomValidation(typeof(Validation), "NAME", ErrorMessage = "Borrower Name#Invalid#")]
     public string BORROWER_NAME { get; set; } = string.Empty;
 }

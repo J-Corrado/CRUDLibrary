@@ -34,7 +34,8 @@ namespace CRUDLibrary.Domain.Services
         public async Task<AddBookSubmitResponse> SubmitAddBook(AddBookSubmitRequest _Request)
         {
             AddBookSubmitResponse _Response = new();
-            //_validate.SubmitAddBook(_Request);
+            
+            _Response.ERROR_MESSAGES.AddRange(await _validate.SubmitAddBook(_Request));
 
             if (_Response.ERROR_MESSAGES.Count == 0)
             {
@@ -97,42 +98,46 @@ namespace CRUDLibrary.Domain.Services
             ViewBookResponse _Response = new();
             if (_Response.ERROR_MESSAGES.Count == 0)
             {
-                var book = await _DAL.GetBookById(_Request.BOOK_ID);
-                if (book != null)
-                {
-                    _Response = await _DAL.QueryGetViewBook(_Request);
-                    if (_Response.ERROR_MESSAGES.Count() == 0)
+                
+                    var book = await _DAL.GetBookById(_Request.BOOK_ID);
+                    if (book.Title != null)
                     {
-                        _Response.BOOK_TITLE = book.Title;
-                        _Response.BOOK_PUB_DATE = book.PublicationDate;
-                        _Response.BOOK_GENRE = book.Genre;
-                    }
+                        _Response = await _DAL.QueryGetViewBook(_Request);
+                        if (_Response.ERROR_MESSAGES.Count() == 0)
+                        {
+                            _Response.BOOK_TITLE = book.Title;
+                            _Response.BOOK_PUB_DATE = book.PublicationDate;
+                            _Response.BOOK_GENRE = book.Genre;
+                        }
 
-                    var authoredBooks = await _DAL.QueryGetBookAuthors(_Request.BOOK_ID);
-                    if (authoredBooks != null)
-                    {
-                        _Response.BOOK_AUTHORS = authoredBooks.Select(ab => new AuthorBookDto
-                                            {
-                                                ID = ab.ID,
-                                                AUTHOR_ID = ab.AUTHOR_ID,
-                                                AUTHOR_NAME = ab.AUTHOR_NAME,
-                                                AUTHOR_BORN = ab.AUTHOR_BORN,
-                                                AUTHOR_DIED = ab.AUTHOR_DIED
-                                            }).ToList();
+                        var authoredBooks = await _DAL.QueryGetBookAuthors(_Request.BOOK_ID);
+                        if (authoredBooks != null)
+                        {
+                            _Response.BOOK_AUTHORS = authoredBooks.Select(ab => new AuthorBookDto
+                            {
+                                ID = ab.ID,
+                                AUTHOR_ID = ab.AUTHOR_ID,
+                                AUTHOR_NAME = ab.AUTHOR_NAME,
+                                AUTHOR_BORN = ab.AUTHOR_BORN,
+                                AUTHOR_DIED = ab.AUTHOR_DIED
+                            }).ToList();
+                        }
+
+                        var borrowedBooks = await _DAL.QueryGetBorrowersByBook(_Request.BOOK_ID);
+                        if (borrowedBooks != null)
+                        {
+                            _Response.BOOK_BORROWERS = borrowedBooks.Select(bb => new BookBorrowerDto
+                            {
+                                ID = bb.ID,
+                                BORROWER_ID = bb.BORROWER_ID,
+                                BORROWER_NAME = bb.BORROWER_NAME,
+                                BORROWED_DATE = bb.BORROWED_DATE,
+                                RETURNED_DATE = bb.RETURNED_DATE ?? string.Empty
+                            }).ToList();
+                        }
                     }
-                    
-                    var borrowedBooks = await _DAL.QueryGetBorrowersByBook(_Request.BOOK_ID);
-                    if (borrowedBooks != null)
-                    {
-                        _Response.BOOK_BORROWERS = borrowedBooks.Select(bb => new BookBorrowerDto
-                                            {
-                                                ID = bb.ID,
-                                                BORROWER_ID = bb.BORROWER_ID,
-                                                BORROWER_NAME = bb.BORROWER_NAME,
-                                                BORROWED_DATE = bb.BORROWED_DATE
-                                            }).ToList();
-                    }
-                }
+                
+
             }
             return _Response;
         }
@@ -140,13 +145,13 @@ namespace CRUDLibrary.Domain.Services
         public async Task<UpdateBookResponse> GetUpdateBook(UpdateBookRequest _Request)
         {
             UpdateBookResponse _Response = new();
+            
             if (_Response.ERROR_MESSAGES.Count == 0)
             {
                 _Response = await _DAL.QueryUpdateBook(_Request);
-                _Response.RESP_BOOK_TITLE = _Request.REQ_BOOK_TITLE;
-                _Response.RESP_BOOK_ID = _Request.REQ_BOOK_ID;
+                _Response.GENRES = await _DAL.QueryGetGenres();
             }
-
+            
             return _Response;
         }
         //------------------------------------
@@ -154,7 +159,8 @@ namespace CRUDLibrary.Domain.Services
         {
             UpdateBookSubmitResponse _Response = new();
             
-            _validate.SubmitUpdateBook(ref _Request, ref _Response);
+            _Response.ERROR_MESSAGES.AddRange(await _validate.SubmitUpdateBook(_Request));
+            
             if (_Response.ERROR_MESSAGES.Count == 0)
             {
                 _Response = await _DAL.UpdateBook(_Request);

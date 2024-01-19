@@ -5,10 +5,6 @@
 }
 
 <h1>Borrowers</h1>
-<div id="ErrorMessages" class="alert-message-div">
-    </div>
-    <div id="SuccessMessages" class="alert-message-div alert-success">
-    </div>
 <p>
 
 <p>
@@ -44,17 +40,3 @@
 }
     </tbody>
 </table>
-<script>
-    $(document).ready(function() {
-        var message = sessionStorage.getItem("MESSAGE");
-        if (message !== null) {
-            var messageList = JSON.parse(message);
-            var messageTextArray = messageList.map(function(messageObj) {
-                return messageObj.MESSAGE;
-            });
-            var messageText = messageTextArray.join(' ');
-            $('#SuccessMessages').text(messageText).show();
-            sessionStorage.removeItem("MESSAGE");
-        }
-    });
-</script>

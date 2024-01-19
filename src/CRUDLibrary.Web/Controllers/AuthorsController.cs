@@ -106,15 +106,24 @@ namespace CRUDLibrary.Web.Controllers
         }
         //------------------------------------
         [HttpGet]
-        public async Task<IActionResult> DeleteBook(int Id, int BookId) 
+        public async Task<IActionResult> DeleteBook(int Id, int BookId)
         {
-            var authoredBook = await ABService.GetDeleteAuthorBook(new DeleteAuthorBookRequest()
+            DeleteAuthorBookResponse _Response = new();
+
+            try
             {
-                AUTHOR_ID = Id.ToString(), 
-                BOOK_ID = BookId.ToString()
-            });
+                DeleteAuthorBookRequest _Request = new() { AUTHOR_ID = Id, BOOK_ID = BookId };
+                _Response = await ABService.GetDeleteAuthorBook(_Request);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex);
+                var msgs = new List<MessageListItem>()
+                    { new MessageListItem() { MESSAGE = "Unable to delete Author from Book" } };
+                _Response.ERROR_MESSAGES.AddRange(msgs);
+            }
             
-            return View(authoredBook);
+            return View(_Response);
         }
         //------------------------------------
         [HttpGet]
@@ -144,6 +153,7 @@ namespace CRUDLibrary.Web.Controllers
         {
             AddAuthorSubmitResponse _Response = new AddAuthorSubmitResponse();
             MessageListItem msgs = new();
+            
             try
             { 
                 _Response = await AuthorService.SubmitAddAuthor(_Request);
@@ -153,7 +163,7 @@ namespace CRUDLibrary.Web.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
-               msgs.MESSAGE = "Error adding Author in POST.";
+                msgs.MESSAGE = "Error adding Author.";
                 _Response.ERROR_MESSAGES.Add(msgs);
             }
 
@@ -174,7 +184,8 @@ namespace CRUDLibrary.Web.Controllers
             }
             catch(Exception ex)
             {
-                msgs.MESSAGE = "Error adding Author.";
+                Console.WriteLine(ex);
+                msgs.MESSAGE = "Error updating Author.";
                 _Response.ERROR_MESSAGES.Add(msgs);
             }
             return Json(_Response);
@@ -193,6 +204,7 @@ namespace CRUDLibrary.Web.Controllers
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex);
                 msgs.MESSAGE = "Error adding Book to Author";
                 _Response.ERROR_MESSAGES.Add(msgs);
             }
@@ -203,10 +215,11 @@ namespace CRUDLibrary.Web.Controllers
         }
         //------------------------------------
         [HttpPost]
-        public async Task<JsonResult> DeleteBookConfirmed([FromBody] DeleteAuthorBookSubmitRequest _Request)
+        public async Task<JsonResult> DeleteBook([FromBody] DeleteAuthorBookSubmitRequest _Request)
         {
             DeleteAuthorBookSubmitResponse _Response = new();
             MessageListItem msgs = new();
+            
             try
             {
                 _Response = await ABService.SubmitDeleteAuthorBook(_Request);

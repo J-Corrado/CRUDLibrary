@@ -102,6 +102,39 @@ $.fn.extend({
         }
         _msg += "</ul></div></div>";
         $(this).append(_msg);
+    },AddSuccess: function (msgs) {
+        var _msg = '<div class="alert alert-success alert-dismissible show">' +
+            '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
+            '<div class="alert-icon"><i class="bi bi-check-circle"></i></div>' +
+            '<div class="alert-text">' +
+            '<h5>Success!</h5><ul>';
+        for (i = 0; i < msgs.length; i++) {
+            var tempmsg = msgs[i].MESSAGE;
+
+            if (tempmsg.indexOf("#") < 0) {
+                _msg += '<li>' + tempmsg + '</li>';
+                continue;
+            }
+
+            var label = "";
+            var validate_id = "";
+            var errorType = "";
+
+            for (j = 0; j < 3; j++) {
+                if (j == 0) {
+                    label = tempmsg.slice(0, tempmsg.indexOf("#"));
+                } else if (j == 1) {
+                    errorType = tempmsg.slice(0, tempmsg.indexOf("#"));
+                } else if (j == 2) {
+                    validate_id = tempmsg;
+                    continue;
+                }
+                tempmsg = tempmsg.substring(tempmsg.indexOf("#") + 1);
+            }
+            _msg += '<li>' + label + ((errorType != "") ? (' is ' + errorType) : '') + '</li>';
+        }
+        _msg += "</ul></div></div>";
+        $(this).append(_msg);
     },
     AddSimpleMessage: function (Message, MessageType) {
         MessageType = MessageType || 0;

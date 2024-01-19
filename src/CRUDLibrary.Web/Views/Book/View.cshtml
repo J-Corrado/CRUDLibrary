@@ -61,8 +61,14 @@
                         <span> | </span>
                         <span><strong>Borrowed On:</strong> @borrower.BORROWED_DATE</span>
                         <span> | </span>
-                        <span><strong>Returned On:</strong> @borrower.RETURNED_DATE</span>
-                        <a class="btn btn-sm btn-success" asp-action="ReturnBorrow" asp-route-id="@Model.BOOK_ID" asp-route-BorrowerId="@borrower.BORROWER_ID">Return Book</a>
+                        @if (!string.IsNullOrEmpty(borrower.RETURNED_DATE))
+                        {
+                            <span><strong>Returned On:</strong> @borrower.RETURNED_DATE</span>
+                        }
+                        else
+                        {
+                            <a class="btn btn-sm btn-success" asp-action="ReturnBorrow" asp-route-id="@Model.BOOK_ID" asp-route-BorrowerId="@borrower.BORROWER_ID">Return Book</a>
+                        }
                     </li>
                 }
             </ul>

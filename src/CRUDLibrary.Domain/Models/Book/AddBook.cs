@@ -35,13 +35,13 @@ public class AddBookSubmitRequest : RequestModel
     
     [Required(ErrorMessage = "Book Title#Required#")]
     [CustomValidation(typeof(Validation), "TITLE", ErrorMessage = "Book Title#Invalid#")]
-    public string BOOK_TITLE { get; set; } = string.Empty;
+    public string? BOOK_TITLE { get; set; } = string.Empty;
 
     [CustomValidation(typeof(Validation), "VAL_DATE", ErrorMessage = "Book Publication Date#Invalid#")]
     public string? BOOK_PUB_DATE { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Book Genre#Required#")]
-    [CustomValidation(typeof(Validation), "ID", ErrorMessage = "Book Genre#Invalid#")]
+    [CustomValidation(typeof(Validation), "GENRE", ErrorMessage = "Book Genre#Invalid#")]
     public string BOOK_GENRE { get; set; } = string.Empty;
 
     [CustomValidation(typeof(Validation), "ID", ErrorMessage = "Author ID#Invalid#")]

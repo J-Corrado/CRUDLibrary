@@ -7,10 +7,12 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/lib/bootstrap-icons-1.10.4/font/bootstrap-icons.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/datatables/datatables.min.css" />
     <link rel="stylesheet" href="~/lib/jquery-ui/jquery-ui.min.css" />
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/jquery/dist/jquery.serialize-object.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/datatables/datatables.min.js"></script>
     <script src="~/lib/jquery-ui/jquery-ui.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script>
@@ -51,12 +53,9 @@
         </div>
     </nav>
 </header>
-<div class="container">
+<div id="main-container"class="container">
     <main role="main" class="pb-3">
-        <div id="ErrorMessages" class="alert-message-div alert-danger">
-        </div>
-        <div id="SuccessMessages" class="alert-message-div alert-success">
-        </div>
+        <div id="SuccessMessages" class="alert-message-div "></div>
         @RenderBody()
 
     </main>
@@ -71,17 +70,17 @@
 @await RenderSectionAsync("Scripts", required: false)
 <script>
     $(document).ready(function() {
-        var message = sessionStorage.getItem("MESSAGE");
-        if (message !== null) {
-            var messageList = JSON.parse(message);
-            var messageTextArray = messageList.map(function(messageObj) {
-                return messageObj.MESSAGE;
-            });
-            var messageText = messageTextArray.join(' ');
-            $('#SuccessMessages').text(messageText).show();
-            sessionStorage.removeItem("MESSAGE");
-        }
-    });
+            try {
+                    var message = sessionStorage.getItem("MESSAGE");
+                    if (message !== null) {
+                        var messageList = JSON.parse(message);
+                        $('#SuccessMessages').AddSuccess(messageList)
+                        sessionStorage.removeItem("MESSAGE");
+                    }
+                } catch (error) {
+                    console.error("Error occurred: ", error);
+                }
+        });
     </script>
 </body>
 </html>

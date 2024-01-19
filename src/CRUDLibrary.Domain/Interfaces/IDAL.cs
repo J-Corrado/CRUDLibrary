@@ -73,8 +73,14 @@ namespace CRUDLibrary.Domain.Interfaces
         #region Validation
 
         Task<List<MessageListItem>> ValidateInsertAuthor(AddAuthorSubmitRequest _Request);
+        Task<List<MessageListItem>> ValidateUpdateAuthor(UpdateAuthorSubmitRequest _Request);
+        
         Task<List<MessageListItem>> ValidateInsertBook(AddBookSubmitRequest _Request);
+        Task<List<MessageListItem>> ValidateUpdateBook(UpdateBookSubmitRequest _Request);
+        
         Task<List<MessageListItem>> ValidateInsertBorrower(AddBorrowerSubmitRequest _Request);
+
+        Task<List<MessageListItem>> ValidateUpdateBorrower(UpdateBorrowerSubmitRequest _Request);
 
         #endregion
     }

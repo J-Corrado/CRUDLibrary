@@ -35,7 +35,7 @@ namespace CRUDLibrary.Domain.Services
         {
             AddBorrowerSubmitResponse _Response = new();
             
-            //_validate.SubmitAddBorrower(_Request);
+            _Response.ERROR_MESSAGES.AddRange(await _DAL.ValidateInsertBorrower(_Request));
             
             if (_Response.ERROR_MESSAGES.Count == 0)
             {
@@ -74,7 +74,7 @@ namespace CRUDLibrary.Domain.Services
             if (_Response.ERROR_MESSAGES.Count == 0)
             {
                 var borrower = await _DAL.GetBorrowerById(_Request.BORROWER_ID);
-                if (borrower != null)
+                if (borrower.Name != null)
                 {
                     _Response = await _DAL.QueryGetViewBorrower(_Request);
                     if (_Response.ERROR_MESSAGES.Count == 0)
@@ -108,8 +108,6 @@ namespace CRUDLibrary.Domain.Services
             if (_Response.ERROR_MESSAGES.Count == 0)
             {
                 _Response = await _DAL.QueryUpdateBorrower(_Request);
-                _Response.RESP_BORROWER_ID = _Request.REQ_BORROWER_ID;
-                _Response.RESP_BORROWER_NAME = _Request.REQ_BORROWER_NAME;
             }
 
             return _Response;
@@ -118,7 +116,9 @@ namespace CRUDLibrary.Domain.Services
         public async Task<UpdateBorrowerSubmitResponse> SubmitUpdateBorrower(UpdateBorrowerSubmitRequest _Request)
         {
             UpdateBorrowerSubmitResponse _Response = new();
-            _validate.SubmitUpdateBorrower(ref _Request, ref _Response);
+            
+            _Response.ERROR_MESSAGES.AddRange(await _validate.SubmitUpdateBorrower(_Request));
+            
             if (_Response.ERROR_MESSAGES.Count == 0)
             {
                 _Response = await _DAL.UpdateBorrower(_Request);

@@ -20,8 +20,8 @@ public class AddBorrowerSubmitRequest : RequestModel
     [CustomValidation(typeof(Validation), "ID", ErrorMessage = "Borrower ID#Invalid#")]
     public string BORROWER_ID { get; set; } = string.Empty;
 
-    [Required(ErrorMessage = "Borrower's name is required")]
-    [StringLength(200)]
+    [Required(ErrorMessage = "Borrower Name#Required#")]
+    [CustomValidation(typeof(Validation), "NAME", ErrorMessage = "Borrower Name#Invalid#")]
     public string BORROWER_NAME { get; set; } = string.Empty;
     
 }

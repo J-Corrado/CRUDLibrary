@@ -1,5 +1,6 @@
 using CRUDLibrary.Domain.Extensions;
 using CRUDLibrary.Data;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 
 
 
@@ -21,8 +22,12 @@ internal class Program
         {
             jsonOptions.JsonSerializerOptions.PropertyNamingPolicy = null;
         });
-        
-        
+        builder.Services.AddControllers(options =>
+        {
+            options.ModelMetadataDetailsProviders.Add(new SystemTextJsonValidationMetadataProvider());
+        });
+
+
         builder.Services.AddMemoryCache();
         builder.Services.AddDistributedMemoryCache(); // Adds a default in-memory implementation of IDistributedCache
         builder.Services.AddSession(options =>

@@ -10,16 +10,18 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Update">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="BORROWER_ID" />
+        <form id="UpdateBorrowerForm">
+            <div id="ErrorMessages" class="alert-message-div">
+                </div>
+            <div validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="BORROWER_ID"/>
             <div class="form-group">
-                <label asp-for="BORROWER_NAME" class="control-label"></label>
-                <input asp-for="BORROWER_NAME" class="form-control" />
-                <span asp-validation-for="BORROWER_NAME" class="text-danger"></span>
+                <label for="BORROWER_NAME" class="control-label">Borrower's Name</label>
+                <input asp-for="BORROWER_NAME" id="BORROWER_NAME" required class="form-control"/>
+                <span validation-for="BORROWER_NAME" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <button type="button" id="UpdateBorrowerSubmit" class="btn btn-primary">Save</button>
             </div>
         </form>
     </div>
@@ -32,3 +34,35 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+<script>
+    
+    $('#UpdateBorrowerSubmit').on('click',function(){
+            EnableLoader();
+            var sendD = JSON.parse($('#UpdateBorrowerForm').serializeJSON());
+            
+            $.ajax({
+                url: RootURL() + 'Borrower/Update/' + @Model.BORROWER_ID,
+                type: 'POST',
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                cache: false,
+                data: JSON.stringify(sendD),
+                success: function (resp) {
+                    if(resp.ERROR_MESSAGES.length == 0)
+                    {
+                        sessionStorage.setItem("MESSAGE", JSON.stringify(resp.SUCCESS_MESSAGES));  
+                        window.location.href = RootURL() + 'Borrower/View/' + resp.ID.toString();
+                    } 
+                    else 
+                    {
+                        DisableLoader();
+                        $('#ErrorMessages').AddMessages(resp.ERROR_MESSAGES);
+                    }
+                },
+                error: function (r) 
+                {
+                    DisableLoader();
+                }
+            });
+      });
+</script>
