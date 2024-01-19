@@ -259,7 +259,6 @@ namespace CRUDLibrary.Domain.Services
 
             return _Response;
         }
-        
         public async Task<Data.LIB_DB.Book> GetBookById(int bookId)
         {
             return await _context.Books.FirstOrDefaultAsync(b => b.BookId == bookId);
@@ -449,7 +448,6 @@ namespace CRUDLibrary.Domain.Services
             }
             return _Response;
         }
-
         public async Task<DeleteBookResponse> QueryDeleteBook(DeleteBookRequest _Request)
         {
             DeleteBookResponse _Response = new();
@@ -565,7 +563,6 @@ namespace CRUDLibrary.Domain.Services
                 })
                 .ToListAsync();
         }
-
         public async Task<UpdateBorrowerResponse> QueryUpdateBorrower(UpdateBorrowerRequest _Request)
         {
             UpdateBorrowerResponse _Response = new();
@@ -723,7 +720,6 @@ namespace CRUDLibrary.Domain.Services
             
             return _Response;
         }
-        
         public async Task<UpdateAuthorBookSubmitResponse> UpdateAuthorBook(UpdateAuthorBookSubmitRequest _Request)
         {
             UpdateAuthorBookSubmitResponse _Response = new UpdateAuthorBookSubmitResponse();
@@ -760,13 +756,12 @@ namespace CRUDLibrary.Domain.Services
                     authorBook.Book.Genre = (BookGenre)_Request.BOOK_GENRE;
                 }
 
-            await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
                 _Response.RESP_AUTHOR_BOOK_ID = authorBook.AuthorBookId;
             }
             
             return _Response;
         }
-
         public async Task<DeleteAuthorBookResponse> QueryDeleteAuthorBook(DeleteAuthorBookRequest _Request)
         {
             DeleteAuthorBookResponse _Response = new();
@@ -862,7 +857,6 @@ namespace CRUDLibrary.Domain.Services
             
             return _Response;
         }
-
         public async Task<UpdateBookBorrowerResponse> QueryUpdateBookBorrower(UpdateBookBorrowerRequest _Request)
         {
             UpdateBookBorrowerResponse _Response = new();
@@ -1005,7 +999,6 @@ namespace CRUDLibrary.Domain.Services
 
             return _Response;
         }
-
         public async Task<List<MessageListItem>> ValidateInsertBook(AddBookSubmitRequest _Request)
         {
             List<MessageListItem> _Response = new();
@@ -1048,7 +1041,6 @@ namespace CRUDLibrary.Domain.Services
 
             return _Response;
         }
-
         public async Task<List<MessageListItem>> ValidateUpdateBook(UpdateBookSubmitRequest _Request)
         {
             List<MessageListItem> _Response = new();
@@ -1083,7 +1075,6 @@ namespace CRUDLibrary.Domain.Services
             
             return _Response;
         }
-
         public async Task<List<MessageListItem>> ValidateInsertBorrower(AddBorrowerSubmitRequest _Request)
         {
             List<MessageListItem> _Response = new();
@@ -1100,7 +1091,6 @@ namespace CRUDLibrary.Domain.Services
 
             return _Response;
         }
-
         public async Task<List<MessageListItem>> ValidateUpdateBorrower(UpdateBorrowerSubmitRequest _Request)
         {
             List<MessageListItem> _Response = new();

@@ -5,6 +5,16 @@
 }
 
 <h1>Books</h1>
+@if (ViewBag.Errors != null)
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        @foreach (var error in ViewBag.Errors)
+        {
+            <p>@error.MESSAGE</p>
+        }
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
 <p>
     <a class="btn btn-success" asp-action="Add">Create New</a>
 </p>

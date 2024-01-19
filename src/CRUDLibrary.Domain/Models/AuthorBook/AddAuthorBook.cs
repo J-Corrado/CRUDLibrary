@@ -13,8 +13,6 @@ public class AddAuthorBookRequest : RequestModel
     public string? AUTHOR_DIED { get; set; } = string.Empty;
 
     public string? BOOK_ID { get; set; } = string.Empty;
-
-    //If adding a new book
     public string BOOK_TITLE { get; set; } = string.Empty;
     public string? BOOK_PUB_DATE { get; set; } = string.Empty;
     public GenreDto? BOOK_GENRE { get; set; }
@@ -49,8 +47,9 @@ public class AddAuthorBookSubmitRequest : RequestModel
     public string? AUTHOR_DIED { get; set; } = string.Empty;
 
 
-    [CustomValidation(typeof(Validation), "ID", ErrorMessage = "Book ID#Invalid#")]
+    
     public string BOOK_ID { get; set; } = string.Empty;
+    
 
     [CustomValidation(typeof(Validation), "NAME", ErrorMessage = "Book Title#Invalid#")]
     public string? BOOK_TITLE { get; set; } = string.Empty;

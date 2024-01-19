@@ -8,10 +8,9 @@ public class UpdateAuthorBookRequest : RequestModel
 {
     public decimal AUTHOR_BOOK_ID { get; set; }
     
-    //If updating with an existing author
+    
     public int? AUTHOR_ID { get; set; }
     
-    //If creating a new author for the relationship
     public string AUTHOR_NAME { get; set; } = string.Empty;
     public string? AUTHOR_BORN { get; set; } = string.Empty;
     public string? AUTHOR_DIED { get; set; } = string.Empty;

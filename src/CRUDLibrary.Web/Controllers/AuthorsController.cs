@@ -1,6 +1,7 @@
 ﻿using CRUDLibrary.Domain.Interfaces;
 using CRUDLibrary.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace CRUDLibrary.Web.Controllers
 {
@@ -22,9 +23,10 @@ namespace CRUDLibrary.Web.Controllers
                 }
 
         #endregion
-        
+
         #region GET
         //------------------------------------
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             AllAuthorsRequest _Request = new();
@@ -32,14 +34,20 @@ namespace CRUDLibrary.Web.Controllers
 
             _Response = await AuthorService.GetAllAuthors(_Request);
             
+            if (TempData["Error"] != null)
+            {
+                var errorMessage = JsonConvert.DeserializeObject<List<MessageListItem>>(TempData["Error"].ToString());
+                ViewBag.Errors = errorMessage;
+            }
+            
             return View(_Response);
         }
         //------------------------------------
+        [HttpGet]
         public async Task<IActionResult> View(int id)
         {
             
             ViewAuthorResponse _Response = new();
-            MessageListItem msgs = new();
             try
             {
                 ViewAuthorRequest _Request = new ViewAuthorRequest(){AUTHOR_ID = id};
@@ -47,9 +55,10 @@ namespace CRUDLibrary.Web.Controllers
             }
             catch (Exception ex)
             {
-                msgs.MESSAGE = "Author cannot be found.";
-                _Response.ERROR_MESSAGES.Add(msgs);
-                return RedirectToAction("Index", _Response);
+                var msgs = new List<MessageListItem>(){new MessageListItem() { MESSAGE = "Author cannot be found."}};
+                _Response.ERROR_MESSAGES.AddRange(msgs);
+                TempData["Error"] = JsonConvert.SerializeObject(msgs);
+                return RedirectToAction("Index");
             }
             
             return View(_Response);
@@ -78,6 +87,8 @@ namespace CRUDLibrary.Web.Controllers
             {
                 var msgs = new List<MessageListItem>() { new MessageListItem(){ MESSAGE = "Error updating Author." }};
                 _Response.ERROR_MESSAGES.AddRange(msgs);
+                TempData["Error"] = JsonConvert.SerializeObject(msgs);
+                return RedirectToAction("Index");
             }
             
             return View(_Response);
@@ -121,6 +132,8 @@ namespace CRUDLibrary.Web.Controllers
                 var msgs = new List<MessageListItem>()
                     { new MessageListItem() { MESSAGE = "Unable to delete Author from Book" } };
                 _Response.ERROR_MESSAGES.AddRange(msgs);
+                TempData["Error"] = JsonConvert.SerializeObject(msgs);
+                return RedirectToAction("Index");
             }
             
             return View(_Response);
@@ -130,15 +143,17 @@ namespace CRUDLibrary.Web.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             DeleteAuthorResponse _Response = new();
-            MessageListItem msgs = new();
             try
             {
                 _Response = await AuthorService.GetDeleteAuthor(new DeleteAuthorRequest() { AUTHOR_ID = id.ToString() });
             }
             catch (Exception ex) 
             {
-                msgs.MESSAGE = "Error deleting Author.";
-                _Response.ERROR_MESSAGES.Add(msgs);
+                var msgs = new List<MessageListItem>()
+                    { new MessageListItem() { MESSAGE = "Unable to find Author" } };
+                _Response.ERROR_MESSAGES.AddRange(msgs);
+                TempData["Error"] = JsonConvert.SerializeObject(msgs);
+                return RedirectToAction("Index");
             }
         
             return View(_Response);

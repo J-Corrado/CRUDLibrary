@@ -120,6 +120,10 @@ namespace CRUDLibrary.Domain.Services
                         BOOK_GENRE = ab.BOOK_GENRE
                     }).ToList();
                 }
+                else
+                {
+                    _Response.ERROR_MESSAGES.Add(new MessageListItem(){MESSAGE = "Author could not be found!"});
+                }
             }
             return _Response;
         }

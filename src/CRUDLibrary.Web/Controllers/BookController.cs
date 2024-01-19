@@ -4,6 +4,7 @@ using CRUDLibrary.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace CRUDLibrary.Web.Controllers
 {
@@ -26,16 +27,24 @@ namespace CRUDLibrary.Web.Controllers
 
         #region GET
         //------------------------------------
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             AllBooksRequest _Request = new();
             AllBooksResponse _Response = new();
         
             _Response = await BookService.GetAllBooks(_Request);
-                    
+
+            if (TempData["Error"] != null)
+            {
+                var errorMessage = JsonConvert.DeserializeObject<List<MessageListItem>>(TempData["Error"].ToString());
+                ViewBag.Errors = errorMessage;
+            }
+
             return View(_Response);
         }
         //------------------------------------
+        [HttpGet]
         public async Task<IActionResult> View(int id)
         {
             ViewBookResponse _Response = new();
@@ -48,9 +57,10 @@ namespace CRUDLibrary.Web.Controllers
             }
             catch (Exception ex)
             {
-                var msg = new List<MessageListItem>() { new MessageListItem { MESSAGE = "Book cannot be found." } };
-                _Response.ERROR_MESSAGES.AddRange(msg);
-                return RedirectToAction("Index", _Response);
+                var msgs = new List<MessageListItem>() { new MessageListItem() { MESSAGE = "Book cannot be found." } };
+                _Response.ERROR_MESSAGES.AddRange(msgs);
+                TempData["Error"] = JsonConvert.SerializeObject(msgs);
+                return RedirectToAction("Index");
             }
                     
             return View(_Response);
@@ -86,9 +96,10 @@ namespace CRUDLibrary.Web.Controllers
             }
             catch
             {
-                var msgs = new List<MessageListItem>() { new MessageListItem(){ MESSAGE = "Book does not exist." }};
+                var msgs = new List<MessageListItem>() { new MessageListItem() { MESSAGE = "Book cannot be found." } };
                 _Response.ERROR_MESSAGES.AddRange(msgs);
-                return RedirectToAction("Index", _Response);
+                TempData["Error"] = JsonConvert.SerializeObject(msgs);
+                return RedirectToAction("Index");
             }
             
             return View(_Response);
@@ -105,8 +116,10 @@ namespace CRUDLibrary.Web.Controllers
             }
             catch
             {
-                var msgs = new MessageListItem() { MESSAGE = "Unable to find Book."  };
-                _Response.ERROR_MESSAGES.Add(msgs);
+                var msgs = new List<MessageListItem>() { new MessageListItem() { MESSAGE = "Unable to find Book or Borrower" } };
+                _Response.ERROR_MESSAGES.AddRange(msgs);
+                TempData["Error"] = JsonConvert.SerializeObject(msgs);
+                return RedirectToAction("Index");
             }
 
             ViewBag.BorrowerId = await BBService.GetBorrowers();
@@ -124,8 +137,10 @@ namespace CRUDLibrary.Web.Controllers
             }
             catch (Exception ex)
             {
-                var msgs = new List<MessageListItem>() { new MessageListItem() { MESSAGE = "Unable to find Book or Borrower." } };
+                var msgs = new List<MessageListItem>() { new MessageListItem() { MESSAGE = "Unable to find Book or Borrower" } };
                 _Response.ERROR_MESSAGES.AddRange(msgs);
+                TempData["Error"] = JsonConvert.SerializeObject(msgs);
+                return RedirectToAction("Index");
             }
                              
             return View(_Response);
@@ -143,6 +158,8 @@ namespace CRUDLibrary.Web.Controllers
                     {
                         var msgs = new List<MessageListItem> { new MessageListItem() { MESSAGE = "Unable to find Book or Author." } };
                         _Response.ERROR_MESSAGES.AddRange(msgs);
+                        TempData["Error"] = JsonConvert.SerializeObject(msgs);
+                        return RedirectToAction("Index");
                     }
         
                     ViewBag.AuthorId = await ABService.GetAuthors();
@@ -161,6 +178,8 @@ namespace CRUDLibrary.Web.Controllers
             {
                 var msgs = new List<MessageListItem> { new MessageListItem() { MESSAGE = "Unable to find Book or Author." } };
                 _Response.ERROR_MESSAGES.AddRange(msgs);
+                TempData["Error"] = JsonConvert.SerializeObject(msgs);
+                return RedirectToAction("Index");
             }
         
             return View(_Response);
@@ -179,6 +198,8 @@ namespace CRUDLibrary.Web.Controllers
             {
                 var msgs = new List<MessageListItem> { new MessageListItem() { MESSAGE = "Unable to find Book." } };
                 _Response.ERROR_MESSAGES.AddRange(msgs);
+                TempData["Error"] = JsonConvert.SerializeObject(msgs);
+                return RedirectToAction("Index");
             }
         
             return View(_Response);

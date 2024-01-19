@@ -29,5 +29,4 @@ public class AddBorrowerSubmitRequest : RequestModel
 public class AddBorrowerSubmitResponse : ResponseModel
 {
     public int ID { get; set; }
-    public string Message { get; set; } = string.Empty;
 }

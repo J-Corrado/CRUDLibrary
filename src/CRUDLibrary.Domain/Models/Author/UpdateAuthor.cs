@@ -32,11 +32,9 @@ public class UpdateAuthorSubmitRequest : RequestModel
     [CustomValidation(typeof(Validation), "VAL_DATE", ErrorMessage = "Author Date of Death#Invalid#")]
     public string AUTHOR_DIED { get; set; } = string.Empty;
     
-    public List<AuthorBookDto> AUTHORED_BOOKS { get; set; } = new List<AuthorBookDto>();
 }
 
 public class UpdateAuthorSubmitResponse : ResponseModel
 {
     public int ID { get; set; }
-    public string Message { get; set; } = string.Empty;
 }

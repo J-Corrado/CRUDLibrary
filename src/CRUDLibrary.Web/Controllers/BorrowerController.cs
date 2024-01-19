@@ -5,6 +5,8 @@ using CRUDLibrary.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace CRUDLibrary.Web.Controllers
 {
@@ -37,6 +39,11 @@ namespace CRUDLibrary.Web.Controllers
             AllBorrowersResponse _Response = new();
 
             _Response = await BorrowerService.GetAllBorrowers(_Request);
+            if (TempData["Error"] != null)
+            {
+                var errorMessage = JsonConvert.DeserializeObject<List<MessageListItem>>(TempData["Error"].ToString());
+                ViewBag.Errors = errorMessage;
+            }
 
             return View(_Response);
         }
@@ -53,10 +60,10 @@ namespace CRUDLibrary.Web.Controllers
             }
             catch
             {
-                var msgs = new List<MessageListItem>()
-                    { new MessageListItem() { MESSAGE = "Unable to find Borrower." } };
+                var msgs = new List<MessageListItem>() { new MessageListItem() { MESSAGE = "Borrower cannot be found." } };
                 _Response.ERROR_MESSAGES.AddRange(msgs);
-                return RedirectToAction("Index", _Response);
+                TempData["Error"] = JsonConvert.SerializeObject(msgs);
+                return RedirectToAction("Index");
             }
 
             return View(_Response);
@@ -93,8 +100,11 @@ namespace CRUDLibrary.Web.Controllers
             }
             catch
             {
-                var msgs = new MessageListItem() { MESSAGE = "Unable to find Book or Borrower"  };
-                _Response.ERROR_MESSAGES.Add(msgs);
+                var msgs = new List<MessageListItem>()
+                    { new MessageListItem() { MESSAGE = "Unable to find Book or Borrower" } };
+                _Response.ERROR_MESSAGES.AddRange(msgs);
+                TempData["Error"] = JsonConvert.SerializeObject(msgs);
+                return RedirectToAction("Index");
             }
 
             ViewBag.BookId = await BBService.GetBooks();
@@ -113,8 +123,10 @@ namespace CRUDLibrary.Web.Controllers
             }
             catch
             {
-                var msgs = new MessageListItem() { MESSAGE = "Unable to find Borrower."  };
-                _Response.ERROR_MESSAGES.Add(msgs);
+                var msgs = new List<MessageListItem>() { new MessageListItem() { MESSAGE = "Borrower cannot be found." } };
+                _Response.ERROR_MESSAGES.AddRange(msgs);
+                TempData["Error"] = JsonConvert.SerializeObject(msgs);
+                return RedirectToAction("Index");
             }
 
             return View(_Response);
@@ -132,9 +144,10 @@ namespace CRUDLibrary.Web.Controllers
             }
             catch
             {
-                var msgs = new List<MessageListItem>()
-                    { new MessageListItem() { MESSAGE = "Unable to locate Book or Borrower." } };
+                var msgs = new List<MessageListItem>() { new MessageListItem() { MESSAGE = "Unable to locate Book or Borrower." } };
                 _Response.ERROR_MESSAGES.AddRange(msgs);
+                TempData["Error"] = JsonConvert.SerializeObject(msgs);
+                return RedirectToAction("Index");
             }
 
             return View(_Response);
@@ -151,9 +164,10 @@ namespace CRUDLibrary.Web.Controllers
             }
             catch
             {
-                var msgs = new List<MessageListItem>()
-                    { new MessageListItem() { MESSAGE = "Error while attempting to find Borrower." } };
+                var msgs = new List<MessageListItem>() { new MessageListItem() { MESSAGE = "Borrower cannot be found." } };
                 _Response.ERROR_MESSAGES.AddRange(msgs);
+                TempData["Error"] = JsonConvert.SerializeObject(msgs);
+                return RedirectToAction("Index");
             }
 
             return View(_Response);

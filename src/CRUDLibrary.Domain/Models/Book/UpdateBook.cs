@@ -40,5 +40,4 @@ public class UpdateBookSubmitRequest : RequestModel
 public class UpdateBookSubmitResponse : ResponseModel
 {
     public int ID { get; set; }
-    public string Message { get; set; } = string.Empty;
 }

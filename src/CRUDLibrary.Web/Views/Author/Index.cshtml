@@ -5,6 +5,17 @@
 }
 
 <h1>Authors</h1>
+@if (ViewBag.Errors != null)
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        @foreach (var error in ViewBag.Errors)
+        {
+            <p>@error.MESSAGE</p>
+        }
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+<div id="ErrorMessages" class="alert-message-div"></div>
 <p>
     <a class="btn btn-success" asp-action="Add">Add New</a>
 </p>
@@ -44,17 +55,3 @@
     }
     </tbody>
 </table>
-<script>
-    $(document).ready(function() {
-        var message = sessionStorage.getItem("MESSAGE");
-        if (message !== null) {
-            var messageList = JSON.parse(message);
-            var messageTextArray = messageList.map(function(messageObj) {
-                return messageObj.MESSAGE;
-            });
-            var messageText = messageTextArray.join(' ');
-            $('#SuccessMessages').text(messageText).show();
-            sessionStorage.removeItem("MESSAGE");
-        }
-    });
-</script>
