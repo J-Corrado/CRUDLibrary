@@ -705,16 +705,19 @@ namespace CRUDLibrary.Domain.Services
 
             var authorBookAuthor = await _context.Authors.FirstOrDefaultAsync(x => x.AuthorId == author.AuthorId);
             var authorBookBook = await _context.Books.FirstOrDefaultAsync(x => x.BookId == book.BookId);
-            
-            var authorBook = new Data.LIB_DB.AuthorBook()
+
+            if (authorBookAuthor != null && authorBookBook != null)
             {
-                AuthorId = authorBookAuthor.AuthorId,
-                BookId = authorBookBook.BookId
-            };
-            
-            _context.AuthorBooks.Add(authorBook);
-            await _context.SaveChangesAsync();
-            
+                var authorBook = new Data.LIB_DB.AuthorBook()
+                {
+                    AuthorId = authorBookAuthor.AuthorId,
+                    BookId = authorBookBook.BookId
+                };
+
+                _context.AuthorBooks.Add(authorBook);
+                await _context.SaveChangesAsync();
+            }
+
             _Response.BOOK_ID = authorBookBook.BookId;
             _Response.AUTHOR_ID = authorBookAuthor.AuthorId;
             
@@ -1067,7 +1070,7 @@ namespace CRUDLibrary.Domain.Services
             if (!string.IsNullOrEmpty(_Request.BOOK_GENRE))
             {
                 var bookGenre = int.Parse(_Request.BOOK_GENRE);
-                if (bookGenre <= 1 || bookGenre > 50)
+                if (bookGenre < 0 || bookGenre > 50)
                 {
                     _Response.Add(new MessageListItem() { MESSAGE = "Book Genre is invalid." });
                 }

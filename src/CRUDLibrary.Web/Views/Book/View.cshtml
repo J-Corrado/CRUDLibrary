@@ -40,12 +40,12 @@
             @foreach(var author in Model.BOOK_AUTHORS)
             {
                 <li class="list-group-item">
-                <a asp-controller="Author" asp-action="View" asp-route-id="@author.AUTHOR_ID">@author.AUTHOR_NAME</a>
-                        <a class="btn btn-sm btn-danger" asp-action="DeleteAuthor" asp-route-id="@Model.BOOK_ID" asp-route-AuthorId="@author.AUTHOR_ID">Delete</a>
+                        <a asp-controller="Author" asp-action="View" asp-route-id="@author.AUTHOR_ID"><i class="bi bi-file-person">@author.AUTHOR_NAME</i></a>
+                        <a class="btn btn-sm btn-danger" asp-action="DeleteAuthor" asp-route-id="@Model.BOOK_ID" asp-route-AuthorId="@author.AUTHOR_ID"><i class="bi bi-x"></i></a>
                 </li>
             }
             </ul>
-            <a class="btn btn-sm btn-primary" asp-action="AddAuthor" asp-route-id="@Model.BOOK_ID">Add Author</a>
+            <a class="btn btn-sm btn-primary" asp-action="AddAuthor" asp-route-id="@Model.BOOK_ID"><i class="bi bi-person-plus"></i></a>
         </dd>
         <hr />
         <dt class="col-sm-2">
@@ -57,22 +57,20 @@
                 {
                     ViewBag.Borrow = borrower;
                     <li class="list-group-item">
-                        <a asp-controller="Borrower" asp-action="View" asp-route-id="@borrower.BORROWER_ID">@borrower.BORROWER_NAME</a>
-                        <span> | </span>
-                        <span><strong>Borrowed On:</strong> @borrower.BORROWED_DATE</span>
-                        <span> | </span>
+                        <a asp-controller="Borrower" asp-action="View" asp-route-id="@borrower.BORROWER_ID"><i class="bi bi-file-person">@borrower.BORROWER_NAME</i></a>
+                        <span> | <strong>Borrowed On:</strong> @borrower.BORROWED_DATE</span>
                         @if (!string.IsNullOrEmpty(borrower.RETURNED_DATE))
                         {
-                            <span><strong>Returned On:</strong> @borrower.RETURNED_DATE</span>
+                            <span> | <strong>Returned On:</strong> @borrower.RETURNED_DATE</span>
                         }
                         else
                         {
-                            <a class="btn btn-sm btn-success" asp-action="ReturnBorrow" asp-route-id="@Model.BOOK_ID" asp-route-BorrowerId="@borrower.BORROWER_ID">Return Book</a>
+                            <a class="btn btn-sm btn-success" asp-action="ReturnBorrow" asp-route-id="@Model.BOOK_ID" asp-route-BorrowerId="@borrower.BORROWER_ID"><i class="bi bi-arrow-return-left"></i></a>
                         }
                     </li>
                 }
             </ul>
-            <a class="btn btn-sm btn-primary" asp-action="AddBorrow" asp-route-id="@Model.BOOK_ID">Add Borrower</a>
+            <a class="btn btn-sm btn-primary" asp-action="AddBorrow" asp-route-id="@Model.BOOK_ID"><i class="bi bi-person-plus"></i></a>
         </dd>
     </dl>
 </div>

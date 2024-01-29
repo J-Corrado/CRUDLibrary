@@ -47,7 +47,7 @@
             {
                 <li class="list-group-item">
                 <a asp-controller="Book" asp-action="View" asp-route-id="@book.BOOK_ID">@book.BOOK_TITLE</a>
-                        <a class="btn btn-sm btn-danger" asp-action="DeleteBook" asp-route-id="@Model.AUTHOR_ID" asp-route-BookId="@book.BOOK_ID">Delete</a>
+                        <a class="btn btn-sm btn-danger" asp-action="DeleteBook" asp-route-id="@Model.AUTHOR_ID" asp-route-BookId="@book.BOOK_ID"><i class="bi bi-x"></i></a>
                 </li>
              }
             </ul>

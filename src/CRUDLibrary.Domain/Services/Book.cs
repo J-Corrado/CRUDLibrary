@@ -40,7 +40,7 @@ namespace CRUDLibrary.Domain.Services
             if (_Response.ERROR_MESSAGES.Count == 0)
             {
                 _Response = await _DAL.InsertAddBook(_Request);
-                if (_Request.AUTHOR_ID != null)
+                if (!string.IsNullOrEmpty(_Request.AUTHOR_ID))
                 {
                     await _DAL.InsertAddAuthorBook(new AddAuthorBookSubmitRequest()
                     {
